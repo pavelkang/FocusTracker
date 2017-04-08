@@ -1,10 +1,17 @@
-// Copyright (C) 2008-2014 Conrad Sanderson
-// Copyright (C) 2008-2014 NICTA (www.nicta.com.au)
-// Copyright (C) 2011 Stanislav Funiak
+// Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
+// Copyright 2008-2016 National ICT Australia (NICTA)
 // 
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// ------------------------------------------------------------------------
 
 
 //! \addtogroup fn_eig_sym
@@ -33,7 +40,7 @@ eig_sym
   if(status == false)
     {
     eigval.reset();
-    arma_bad("eig_sym(): failed to converge", false);
+    arma_debug_warn("eig_sym(): decomposition failed");
     }
   
   return status;
@@ -43,6 +50,7 @@ eig_sym
 
 //! Eigenvalues of real/complex symmetric/hermitian matrix X
 template<typename T1>
+arma_warn_unused
 inline
 Col<typename T1::pod_type>
 eig_sym
@@ -60,7 +68,7 @@ eig_sym
   if(status == false)
     {
     out.reset();
-    arma_bad("eig_sym(): failed to converge");
+    arma_stop_runtime_error("eig_sym(): decomposition failed");
     }
   
   return out;
@@ -88,8 +96,8 @@ eig_sym
   
   const char sig = (method != NULL) ? method[0] : char(0);
   
-  arma_debug_check( ((sig != 's') && (sig != 'd')),         "eig_sym(): unknown method specified"     );
-  arma_debug_check( void_ptr(&eigval) == void_ptr(&eigvec), "eig_sym(): eigval is an alias of eigvec" );
+  arma_debug_check( ((sig != 's') && (sig != 'd')),         "eig_sym(): unknown method specified"                             );
+  arma_debug_check( void_ptr(&eigval) == void_ptr(&eigvec), "eig_sym(): parameter 'eigval' is an alias of parameter 'eigvec'" );
   
   const Proxy<T1> P(X.get_ref());
   
@@ -108,7 +116,7 @@ eig_sym
     {
     eigval.reset();
     eigvec.reset();
-    arma_bad("eig_sym(): failed to converge", false);
+    arma_debug_warn("eig_sym(): decomposition failed");
     }
   else
     {

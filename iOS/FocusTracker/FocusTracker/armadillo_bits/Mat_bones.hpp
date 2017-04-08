@@ -1,10 +1,17 @@
-// Copyright (C) 2008-2015 Conrad Sanderson
-// Copyright (C) 2008-2015 NICTA (www.nicta.com.au)
-// Copyright (C) 2012-2014 Ryan Curtin
+// Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
+// Copyright 2008-2016 National ICT Australia (NICTA)
 // 
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// ------------------------------------------------------------------------
 
 
 //! \addtogroup Mat
@@ -20,23 +27,25 @@ class Mat : public Base< eT, Mat<eT> >
   public:
   
   typedef eT                                elem_type;  //!< the type of elements stored in the matrix
-  typedef typename get_pod_type<eT>::result pod_type;   //!< if eT is non-complex, pod_type is same as eT. otherwise, pod_type is the underlying type used by std::complex
+  typedef typename get_pod_type<eT>::result  pod_type;  //!< if eT is std::complex<T>, pod_type is T; otherwise pod_type is eT
   
-  const uword  n_rows;    //!< number of rows in the matrix (read-only)
-  const uword  n_cols;    //!< number of columns in the matrix (read-only)
-  const uword  n_elem;    //!< number of elements in the matrix (read-only)
+  const uword  n_rows;    //!< number of rows     (read-only)
+  const uword  n_cols;    //!< number of columns  (read-only)
+  const uword  n_elem;    //!< number of elements (read-only)
   const uhword vec_state; //!< 0: matrix layout; 1: column vector layout; 2: row vector layout
   const uhword mem_state;
   
-  // mem_state = 0: normal matrix that can be resized; 
-  // mem_state = 1: use auxiliary memory until change in the number of elements is requested;  
-  // mem_state = 2: use auxiliary memory and don't allow the number of elements to be changed; 
-  // mem_state = 3: fixed size (e.g. via template based size specification).
+  // mem_state = 0: normal matrix which manages its own memory
+  // mem_state = 1: use auxiliary memory until a size change
+  // mem_state = 2: use auxiliary memory and don't allow the number of elements to be changed
+  // mem_state = 3: fixed size (eg. via template based size specification)
   
-  arma_aligned const eT* const mem;  //!< pointer to the memory used by the matrix (memory is read-only)
+  arma_aligned const eT* const mem;  //!< pointer to the memory used for storing elements (memory is read-only)
+  
   
   protected:
-  arma_align_mem eT mem_local[ arma_config::mat_prealloc ];
+  
+  arma_align_mem eT mem_local[ arma_config::mat_prealloc ];  // local storage, for small vectors and matrices
   
   
   public:
@@ -73,7 +82,7 @@ class Mat : public Base< eT, Mat<eT> >
   inline const Mat& operator=(Mat&& m);
   #endif
   
-  inline Mat(      eT* aux_mem, const uword aux_n_rows, const uword aux_n_cols, const bool copy_aux_mem = true, const bool strict = true);
+  inline Mat(      eT* aux_mem, const uword aux_n_rows, const uword aux_n_cols, const bool copy_aux_mem = true, const bool strict = false);
   inline Mat(const eT* aux_mem, const uword aux_n_rows, const uword aux_n_cols);
   
   arma_inline const Mat&  operator=(const eT val);
@@ -100,7 +109,9 @@ class Mat : public Base< eT, Mat<eT> >
   
   template<typename T1, typename T2>
   inline explicit Mat(const Base<pod_type,T1>& A, const Base<pod_type,T2>& B);
-
+  
+  inline explicit          Mat(const subview<eT>& X, const bool use_colmem);  // only to be used by the quasi_unwrap class
+  
   inline                   Mat(const subview<eT>& X);
   inline const Mat&  operator=(const subview<eT>& X);
   inline const Mat& operator+=(const subview<eT>& X);
@@ -262,6 +273,15 @@ class Mat : public Base< eT, Mat<eT> >
   template<typename T1> inline const subview_each2< Mat<eT>, 0, T1 > each_col(const Base<uword, T1>& indices) const;
   template<typename T1> inline const subview_each2< Mat<eT>, 1, T1 > each_row(const Base<uword, T1>& indices) const;
   
+  #if defined(ARMA_USE_CXX11)
+  inline const Mat& each_col(const std::function< void(      Col<eT>&) >& F);
+  inline const Mat& each_col(const std::function< void(const Col<eT>&) >& F) const;
+  
+  inline const Mat& each_row(const std::function< void(      Row<eT>&) >& F);
+  inline const Mat& each_row(const std::function< void(const Row<eT>&) >& F) const;
+  #endif
+  
+  
   arma_inline       diagview<eT> diag(const sword in_id = 0);
   arma_inline const diagview<eT> diag(const sword in_id = 0) const;
   
@@ -412,15 +432,18 @@ class Mat : public Base< eT, Mat<eT> >
   
   inline void  reshape(const uword in_rows, const uword in_cols);
   inline void  reshape(const SizeMat& s);
-  inline void  reshape(const uword in_rows, const uword in_cols, const uword dim);
+  
+  arma_deprecated inline void reshape(const uword in_rows, const uword in_cols, const uword dim);  //!< NOTE: don't use this form: it's deprecated
   
   
-  template<typename functor>
-  inline const Mat& transform(functor F);
+  template<typename functor> inline const Mat&  for_each(functor F);
+  template<typename functor> inline const Mat&  for_each(functor F) const;
   
-  template<typename functor>
-  inline const Mat& imbue(functor F);
+  template<typename functor> inline const Mat& transform(functor F);
+  template<typename functor> inline const Mat&     imbue(functor F);
   
+  
+  inline const Mat& replace(const eT old_val, const eT new_val);
   
   arma_hot inline const Mat& fill(const eT val);
   
@@ -683,10 +706,15 @@ class Mat : public Base< eT, Mat<eT> >
   
   
   friend class Cube<eT>;
+  friend class subview_cube<eT>;
   friend class glue_join;
   friend class op_strans;
   friend class op_htrans;
   friend class op_resize;
+  friend class op_mean;
+  friend class op_max;
+  friend class op_min;
+
   
   public:
   

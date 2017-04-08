@@ -1,9 +1,21 @@
-// Copyright (C) 2014 Conrad Sanderson
-// Copyright (C) 2014 NICTA (www.nicta.com.au)
+// Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
+// Copyright 2008-2016 National ICT Australia (NICTA)
 // 
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// ------------------------------------------------------------------------
+
+
+//! \addtogroup gmm_diag
+//! @{
 
 
 struct gmm_dist_mode { const uword id;  inline explicit gmm_dist_mode(const uword in_id) : id(in_id) {} };
@@ -128,6 +140,20 @@ class gmm_diag
     );
   
   
+  template<typename T1>
+  inline
+  bool
+  kmeans_wrapper
+    (
+           Mat<eT>&       user_means,
+    const Base<eT,T1>&    data,
+    const uword           n_gaus,
+    const gmm_seed_mode&  seed_mode,
+    const uword           km_iter,
+    const bool            print_mode
+    );
+  
+  
   //
   
   protected:
@@ -168,7 +194,7 @@ class gmm_diag
   
   template<uword dist_id> inline void generate_initial_dcovs_and_hefts(const Mat<eT>& X, const eT var_floor);
   
-  template<uword dist_id> inline bool km_iterate(const Mat<eT>& X, const uword max_iter, const bool verbose);
+  template<uword dist_id> inline bool km_iterate(const Mat<eT>& X, const uword max_iter, const bool verbose, const char* signature);
   
   template<uword dist_id> inline void km_update_stats(const Mat<eT>& X, const uword start_index, const uword end_index, const Mat<eT>& old_means, field< running_mean_vec<eT> >& running_means) const;
   
@@ -189,3 +215,5 @@ class gmm_diag
 typedef gmm_priv::gmm_diag<double>  gmm_diag;
 typedef gmm_priv::gmm_diag<float>  fgmm_diag;
 
+
+//! @}

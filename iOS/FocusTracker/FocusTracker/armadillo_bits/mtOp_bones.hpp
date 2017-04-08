@@ -1,9 +1,17 @@
-// Copyright (C) 2008-2015 Conrad Sanderson
-// Copyright (C) 2008-2015 NICTA (www.nicta.com.au)
+// Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
+// Copyright 2008-2016 National ICT Australia (NICTA)
 // 
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// ------------------------------------------------------------------------
 
 
 //! \addtogroup mtOp
@@ -24,16 +32,43 @@ class mtOp : public Base<out_eT, mtOp<out_eT, T1, op_type> >
   typedef typename T1::elem_type                in_eT;
   
   static const bool is_row = \
-     (T1::is_row && (is_op_mixed_elem<op_type>::value || is_same_type<op_type, op_clamp>::value || is_same_type<op_type, op_real>::value || is_same_type<op_type, op_imag>::value || is_same_type<op_type, op_abs>::value));
+    (
+    // operations which result in a row vector if the input is a row vector
+    T1::is_row &&
+      (
+         is_op_mixed_elem<op_type>::value
+      || is_same_type<op_type, op_clamp>::value
+      || is_same_type<op_type, op_hist>::value
+      || is_same_type<op_type, op_real>::value
+      || is_same_type<op_type, op_imag>::value
+      || is_same_type<op_type, op_abs>::value
+      || is_same_type<op_type, op_arg>::value
+      )
+    );
   
   static const bool is_col = \
-     (T1::is_col && (is_op_mixed_elem<op_type>::value || is_same_type<op_type, op_clamp>::value || is_same_type<op_type, op_real>::value || is_same_type<op_type, op_imag>::value || is_same_type<op_type, op_abs>::value))
-  || (is_same_type<op_type, op_find>::value)
-  || (is_same_type<op_type, op_find_simple>::value)
-  || (is_same_type<op_type, op_find_unique>::value)
-  || (is_same_type<op_type, op_sort_index>::value)
-  || (is_same_type<op_type, op_stable_sort_index>::value);
-  
+    (
+    // operations which always result in a column vector
+       (is_same_type<op_type, op_find>::value)
+    || (is_same_type<op_type, op_find_simple>::value)
+    || (is_same_type<op_type, op_find_unique>::value)
+    || (is_same_type<op_type, op_sort_index>::value)
+    || (is_same_type<op_type, op_stable_sort_index>::value)
+    )
+    ||
+    (
+    // operations which result in a column vector if the input is a column vector
+    T1::is_col &&
+      (
+         is_op_mixed_elem<op_type>::value
+      || is_same_type<op_type, op_clamp>::value
+      || is_same_type<op_type, op_hist>::value
+      || is_same_type<op_type, op_real>::value
+      || is_same_type<op_type, op_imag>::value
+      || is_same_type<op_type, op_abs>::value
+      || is_same_type<op_type, op_arg>::value
+      )
+    );
   
   
   inline explicit mtOp(const T1& in_m);

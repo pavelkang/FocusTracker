@@ -1,10 +1,17 @@
-// Copyright (C) 2008-2015 Conrad Sanderson
-// Copyright (C) 2008-2015 NICTA (www.nicta.com.au)
-// Copyright (C) 2009-2010 Ian Cullinan
+// Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
+// Copyright 2008-2016 National ICT Australia (NICTA)
 // 
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// ------------------------------------------------------------------------
 
 
 //! \addtogroup field
@@ -19,7 +26,7 @@ struct field_prealloc_n_elem
 
 
 
-//! A lightweight 2D container for arbitrary objects
+//! A lightweight 1D/2D/3D container for arbitrary objects
 //! (the objects must have a copy constructor)
 
 template<typename oT>
@@ -29,16 +36,16 @@ class field
   
   typedef oT object_type;
   
-  const uword n_rows;     //!< number of rows in the field (read-only)
-  const uword n_cols;     //!< number of columns in the field (read-only)
-  const uword n_slices;   //!< number of slices in the field (read-only)
-  const uword n_elem;     //!< number of elements in the field (read-only)
+  const uword n_rows;     //!< number of rows     (read-only)
+  const uword n_cols;     //!< number of columns  (read-only)
+  const uword n_slices;   //!< number of slices   (read-only)
+  const uword n_elem;     //!< number of elements (read-only)
   
   
   private:
   
-  arma_aligned oT** mem;                                     //!< pointer to memory used by the object
-  arma_aligned oT*  mem_local[ field_prealloc_n_elem::val ]; //!< Internal memory, to avoid calling the 'new' operator for small amounts of memory
+  arma_aligned oT** mem;                                     //!< pointers to stored objects
+  arma_aligned oT*  mem_local[ field_prealloc_n_elem::val ]; //!< local storage, for small fields
   
   
   public:
@@ -63,6 +70,17 @@ class field
   inline void  set_size(const uword n_rows_in, const uword n_cols_in, const uword n_slices_in);
   inline void  set_size(const SizeMat&  s);
   inline void  set_size(const SizeCube& s);
+  
+  #if defined(ARMA_USE_CXX11)
+  inline                  field(const std::initializer_list<oT>& list);
+  inline const field& operator=(const std::initializer_list<oT>& list);
+  
+  inline                  field(const std::initializer_list< std::initializer_list<oT> >& list);
+  inline const field& operator=(const std::initializer_list< std::initializer_list<oT> >& list);
+  
+  inline                  field(field&& X);
+  inline const field& operator=(field&& X);
+  #endif
   
   template<typename oT2>
   inline void copy_size(const field<oT2>& x);
@@ -144,7 +162,15 @@ class field
   inline void print(                           const std::string extra_text = "") const;
   inline void print(std::ostream& user_stream, const std::string extra_text = "") const;
   
-  inline void fill(const oT& x);
+  #if defined(ARMA_USE_CXX11)
+  inline const field& for_each(const std::function< void(      oT&) >& F);
+  inline const field& for_each(const std::function< void(const oT&) >& F) const;
+  #else
+  template<typename functor> inline const field& for_each(functor F);
+  template<typename functor> inline const field& for_each(functor F) const;
+  #endif
+  
+  inline const field& fill(const oT& x);
   
   inline void reset();
   inline void reset_objects();

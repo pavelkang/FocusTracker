@@ -1,10 +1,17 @@
-// Copyright (C) 2013-2014 Ryan Curtin
-// Copyright (C) 2013-2014 Conrad Sanderson
-// Copyright (C) 2013-2014 NICTA
+// Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
+// Copyright 2008-2016 National ICT Australia (NICTA)
 // 
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// ------------------------------------------------------------------------
 
 
 //! \addtogroup fn_eigs_gen
@@ -13,6 +20,7 @@
 
 //! eigenvalues of general sparse matrix X
 template<typename T1>
+arma_warn_unused
 inline
 Col< std::complex<typename T1::pod_type> >
 eigs_gen
@@ -37,7 +45,7 @@ eigs_gen
   if(status == false)
     {
     eigval.reset();
-    arma_bad("eigs_gen(): failed to converge");
+    arma_stop_runtime_error("eigs_gen(): decomposition failed");
     }
   
   return eigval;
@@ -71,7 +79,7 @@ eigs_gen
   if(status == false)
     {
     eigval.reset();
-    arma_bad("eigs_gen(): failed to converge", false);
+    arma_debug_warn("eigs_gen(): decomposition failed");
     }
   
   return status;
@@ -97,7 +105,7 @@ eigs_gen
   arma_extra_debug_sigprint();
   arma_ignore(junk);
   
-  arma_debug_check( void_ptr(&eigval) == void_ptr(&eigvec), "eigs_gen(): eigval is an alias of eigvec" );
+  arma_debug_check( void_ptr(&eigval) == void_ptr(&eigvec), "eigs_gen(): parameter 'eigval' is an alias of parameter 'eigvec'" );
   
   const bool status = sp_auxlib::eigs_gen(eigval, eigvec, X, n_eigvals, form, tol);
   
@@ -105,7 +113,7 @@ eigs_gen
     {
     eigval.reset();
     eigvec.reset();
-    arma_bad("eigs_gen(): failed to converge", false);
+    arma_debug_warn("eigs_gen(): decomposition failed");
     }
   
   return status;

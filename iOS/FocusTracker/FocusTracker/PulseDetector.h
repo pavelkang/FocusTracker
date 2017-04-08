@@ -8,6 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
+class DataBuffer;
+
 @interface PulseDetector : NSObject
-- (int)getPulse;
+
++ (int)getPulse:(DataBuffer *) db;
+
 @end

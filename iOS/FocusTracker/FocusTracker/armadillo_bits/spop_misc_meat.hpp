@@ -1,8 +1,17 @@
-// Copyright (C) 2012-2015 Conrad Sanderson
+// Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
+// Copyright 2008-2016 National ICT Australia (NICTA)
 // 
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// ------------------------------------------------------------------------
 
 
 //! \addtogroup spop_misc
@@ -136,6 +145,52 @@ spop_cx_abs::apply(SpMat<typename T1::pod_type>& out, const mtSpOp<typename T1::
   arma_extra_debug_sigprint();
   
   out.init_xform_mt(in.m, priv::functor_cx_abs());
+  }
+
+
+
+namespace priv
+  {
+  struct functor_arg
+    {
+    template<typename eT>
+    arma_inline eT operator()(const eT val) const { return arma_arg<eT>::eval(val); }
+    };
+  }
+
+
+
+template<typename T1>
+inline
+void
+spop_arg::apply(SpMat<typename T1::elem_type>& out, const SpOp<T1,spop_arg>& in)
+  {
+  arma_extra_debug_sigprint();
+  
+  out.init_xform(in.m, priv::functor_arg());
+  }
+
+
+
+namespace priv
+  {
+  struct functor_cx_arg
+    {
+    template<typename T>
+    arma_inline T operator()(const std::complex<T>& val) const { return std::arg(val); }
+    };
+  }
+
+
+
+template<typename T1>
+inline
+void
+spop_cx_arg::apply(SpMat<typename T1::pod_type>& out, const mtSpOp<typename T1::pod_type, T1, spop_cx_arg>& in)
+  {
+  arma_extra_debug_sigprint();
+  
+  out.init_xform_mt(in.m, priv::functor_cx_arg());
   }
 
 
@@ -297,29 +352,13 @@ spop_resize::apply(SpMat<typename T1::elem_type>& out, const SpOp<T1, spop_resiz
 
 
 
-template<typename T1>
-inline
-void
-spop_diagmat::apply(SpMat<typename T1::elem_type>& out, const SpOp<T1, spop_diagmat>& in)
+namespace priv
   {
-  arma_extra_debug_sigprint();
-  
-  typedef typename T1::elem_type eT;
-  
-  const SpProxy<T1> p(in.m);
-  
-  if(p.is_alias(out) == false)
+  struct functor_floor
     {
-    spop_diagmat::apply_noalias(out, p);
-    }
-  else
-    {
-    SpMat<eT> tmp;
-    
-    spop_diagmat::apply_noalias(tmp, p);
-    
-    out.steal_mem(tmp);
-    }
+    template<typename eT>
+    arma_inline eT operator()(const eT val) const { return eop_aux::floor(val); }
+    };
   }
 
 
@@ -327,74 +366,103 @@ spop_diagmat::apply(SpMat<typename T1::elem_type>& out, const SpOp<T1, spop_diag
 template<typename T1>
 inline
 void
-spop_diagmat::apply_noalias(SpMat<typename T1::elem_type>& out, const SpProxy<T1>& p)
+spop_floor::apply(SpMat<typename T1::elem_type>& out, const SpOp<T1,spop_floor>& in)
   {
   arma_extra_debug_sigprint();
   
-  const uword n_rows = p.get_n_rows();
-  const uword n_cols = p.get_n_cols();
-  
-  const bool p_is_vec = (n_rows == 1) || (n_cols == 1);
-  
-  if(p_is_vec)    // generate a diagonal matrix out of a vector
+  out.init_xform(in.m, priv::functor_floor());
+  }
+
+
+
+namespace priv
+  {
+  struct functor_ceil
     {
-    const uword N = (n_rows == 1) ? n_cols : n_rows;
-    
-    out.zeros(N, N);
-    
-    if(p.get_n_nonzero() == 0)  { return; }
-    
-    typename SpProxy<T1>::const_iterator_type it     = p.begin();
-    typename SpProxy<T1>::const_iterator_type it_end = p.end();
-      
-    if(n_cols == 1)
-      {
-      while(it != it_end)
-        {
-        const uword row = it.row();
-        
-        out.at(row,row) = (*it);
-        
-        ++it;
-        }
-      }
-    else
-    if(n_rows == 1)
-      {
-      while(it != it_end)
-        {
-        const uword col = it.col();
-        
-        out.at(col,col) = (*it);
-        
-        ++it;
-        }
-      }
-    }
-  else   // generate a diagonal matrix out of a matrix
+    template<typename eT>
+    arma_inline eT operator()(const eT val) const { return eop_aux::ceil(val); }
+    };
+  }
+
+
+
+template<typename T1>
+inline
+void
+spop_ceil::apply(SpMat<typename T1::elem_type>& out, const SpOp<T1,spop_ceil>& in)
+  {
+  arma_extra_debug_sigprint();
+  
+  out.init_xform(in.m, priv::functor_ceil());
+  }
+
+
+
+namespace priv
+  {
+  struct functor_round
     {
-    arma_debug_check( (n_rows != n_cols), "diagmat(): given matrix is not square" );
-    
-    out.zeros(n_rows, n_rows);
-    
-    if(p.get_n_nonzero() == 0)  { return; }
-    
-    typename SpProxy<T1>::const_iterator_type it     = p.begin();
-    typename SpProxy<T1>::const_iterator_type it_end = p.end();
-      
-    while(it != it_end)
-      {
-      const uword row = it.row();
-      const uword col = it.col();
-      
-      if(row == col)
-        {
-        out.at(row,row) = (*it);
-        }
-      
-      ++it;
-      }
-    }
+    template<typename eT>
+    arma_inline eT operator()(const eT val) const { return eop_aux::round(val); }
+    };
+  }
+
+
+
+template<typename T1>
+inline
+void
+spop_round::apply(SpMat<typename T1::elem_type>& out, const SpOp<T1,spop_round>& in)
+  {
+  arma_extra_debug_sigprint();
+  
+  out.init_xform(in.m, priv::functor_round());
+  }
+
+
+
+namespace priv
+  {
+  struct functor_trunc
+    {
+    template<typename eT>
+    arma_inline eT operator()(const eT val) const { return eop_aux::trunc(val); }
+    };
+  }
+
+
+
+template<typename T1>
+inline
+void
+spop_trunc::apply(SpMat<typename T1::elem_type>& out, const SpOp<T1,spop_trunc>& in)
+  {
+  arma_extra_debug_sigprint();
+  
+  out.init_xform(in.m, priv::functor_trunc());
+  }
+
+
+
+namespace priv
+  {
+  struct functor_sign
+    {
+    template<typename eT>
+    arma_inline eT operator()(const eT val) const { return eop_aux::sign(val); }
+    };
+  }
+
+
+
+template<typename T1>
+inline
+void
+spop_sign::apply(SpMat<typename T1::elem_type>& out, const SpOp<T1,spop_sign>& in)
+  {
+  arma_extra_debug_sigprint();
+  
+  out.init_xform(in.m, priv::functor_sign());
   }
 
 

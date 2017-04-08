@@ -1,9 +1,17 @@
-// Copyright (C) 2008-2015 Conrad Sanderson
-// Copyright (C) 2008-2015 NICTA (www.nicta.com.au)
+// Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
+// Copyright 2008-2016 National ICT Australia (NICTA)
 // 
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// ------------------------------------------------------------------------
 
 
 //! \addtogroup op_sort
@@ -107,6 +115,8 @@ op_sort::apply_noalias(Mat<eT>& out, const Mat<eT>& X, const uword sort_type, co
     return;
     }
   
+  arma_debug_check( (sort_type > 1), "sort(): parameter 'sort_type' must be 0 or 1" );
+  arma_debug_check( (X.has_nan()),   "sort(): detected NaN"                         );
   
   if(dim == 0)  // sort the contents of each column
     {
@@ -173,21 +183,49 @@ op_sort::apply(Mat<typename T1::elem_type>& out, const Op<T1,op_sort>& in)
   const uword sort_type = in.aux_uword_a;
   const uword dim       = in.aux_uword_b;
   
-  arma_debug_check( (sort_type > 1), "sort(): parameter 'sort_type' must be 0 or 1" );
-  arma_debug_check( (dim > 1),       "sort(): parameter 'dim' must be 0 or 1"       );
-  arma_debug_check( (X.has_nan()),   "sort(): detected NaN"                         );
-  
   if(U.is_alias(out))
     {
-    Mat<eT> out2;
+    Mat<eT> tmp;
     
-    op_sort::apply_noalias(out2, X, sort_type, dim);
+    op_sort::apply_noalias(tmp, X, sort_type, dim);
     
-    out.steal_mem(out2);
+    out.steal_mem(tmp);
     }
   else
     {
-    apply_noalias(out, X, sort_type, dim);
+    op_sort::apply_noalias(out, X, sort_type, dim);
+    }
+  }
+
+
+
+template<typename T1>
+inline
+void
+op_sort_default::apply(Mat<typename T1::elem_type>& out, const Op<T1,op_sort_default>& in)
+  {
+  arma_extra_debug_sigprint();
+  
+  typedef typename T1::elem_type eT;
+  
+  const quasi_unwrap<T1> U(in.m);
+  
+  const Mat<eT>& X = U.M;
+  
+  const uword sort_type = in.aux_uword_a;
+  const uword dim       = (T1::is_row) ? 1 : 0;
+  
+  if(U.is_alias(out))
+    {
+    Mat<eT> tmp;
+    
+    op_sort::apply_noalias(tmp, X, sort_type, dim);
+    
+    out.steal_mem(tmp);
+    }
+  else
+    {
+    op_sort::apply_noalias(out, X, sort_type, dim);
     }
   }
 

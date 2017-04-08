@@ -1,29 +1,41 @@
-// Copyright (C) 2008-2015 Conrad Sanderson
-// Copyright (C) 2008-2015 NICTA (www.nicta.com.au)
+// Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
+// Copyright 2008-2016 National ICT Australia (NICTA)
 // 
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// ------------------------------------------------------------------------
 
 
 //! \addtogroup typedef_elem
 //! @{
 
 
-#if   UCHAR_MAX >= 0xff
-  typedef unsigned char    u8;
-  typedef          char    s8;
-#elif defined(UINT8_MAX)
-  typedef          uint8_t u8;
-  typedef           int8_t s8;
+#if (defined(ARMA_U8_TYPE) && defined(ARMA_S8_TYPE))
+    typedef ARMA_U8_TYPE     u8;
+    typedef ARMA_S8_TYPE     s8;
 #else
-  #error "don't know how to typedef 'u8' on this system"
+  #if   UCHAR_MAX >= 0xff
+    typedef unsigned char    u8;
+    typedef          char    s8;
+  #elif defined(UINT8_MAX)
+    typedef          uint8_t u8;
+    typedef           int8_t s8;
+  #else
+    #error "don't know how to typedef 'u8' on this system"
+  #endif
 #endif
 
 // NOTE:
-// "signed char" is not the same as "char". 
-// http://www.embedded.com/columns/programmingpointers/206107018
-// http://en.wikipedia.org/wiki/C_variable_types_and_declarations
+// "char" is not guaranteed to be the same as "signed char" 
+// https://en.wikipedia.org/wiki/C_data_types
 
 
 #if   USHRT_MAX >= 0xffff

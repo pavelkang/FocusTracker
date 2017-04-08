@@ -1,12 +1,17 @@
-// Copyright (C) 2008-2012 NICTA (www.nicta.com.au)
-// Copyright (C) 2008-2012 Conrad Sanderson
-// Copyright (C) 2009-2010 Ian Cullinan
-// Copyright (C) 2012 Ryan Curtin
-// Copyright (C) 2013 Szabolcs Horvat
+// Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
+// Copyright 2008-2016 National ICT Australia (NICTA)
 // 
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// ------------------------------------------------------------------------
 
 
 //! \addtogroup diskio
@@ -28,12 +33,9 @@ class diskio
   
   inline static file_type guess_file_type(std::istream& f);
   
-  inline static char conv_to_hex_char(const u8 x);
-  inline static void conv_to_hex(char* out, const u8 x);
+  inline arma_cold static std::string gen_tmp_name(const std::string& x);
   
-  inline static std::string gen_tmp_name(const std::string& x);
-  
-  inline static bool safe_rename(const std::string& old_name, const std::string& new_name);
+  inline arma_cold static bool safe_rename(const std::string& old_name, const std::string& new_name);
   
   template<typename eT> inline static bool convert_naninf(eT&              val, const std::string& token);
   template<typename  T> inline static bool convert_naninf(std::complex<T>& val, const std::string& token);

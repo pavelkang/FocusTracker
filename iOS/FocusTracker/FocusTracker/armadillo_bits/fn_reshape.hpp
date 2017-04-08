@@ -1,9 +1,17 @@
-// Copyright (C) 2008-2015 Conrad Sanderson
-// Copyright (C) 2008-2015 NICTA (www.nicta.com.au)
+// Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
+// Copyright 2008-2016 National ICT Australia (NICTA)
 // 
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// ------------------------------------------------------------------------
 
 
 //! \addtogroup fn_reshape
@@ -12,6 +20,7 @@
 
 
 template<typename T1>
+arma_warn_unused
 inline
 typename enable_if2< is_arma_type<T1>::value, const Op<T1, op_reshape> >::result
 reshape(const T1& X, const uword in_n_rows, const uword in_n_cols)
@@ -24,6 +33,7 @@ reshape(const T1& X, const uword in_n_rows, const uword in_n_cols)
 
 
 template<typename T1>
+arma_warn_unused
 inline
 typename enable_if2< is_arma_type<T1>::value, const Op<T1, op_reshape> >::result
 reshape(const T1& X, const SizeMat& s)
@@ -35,7 +45,9 @@ reshape(const T1& X, const SizeMat& s)
 
 
 
+//! NOTE: this form is deprecated: don't use it
 template<typename T1>
+arma_deprecated
 inline
 const Op<T1, op_reshape_ext>
 reshape(const Base<typename T1::elem_type,T1>& X, const uword in_n_rows, const uword in_n_cols, const uword dim)
@@ -50,6 +62,7 @@ reshape(const Base<typename T1::elem_type,T1>& X, const uword in_n_rows, const u
 
 
 template<typename T1>
+arma_warn_unused
 inline
 const OpCube<T1, op_reshape_ext>
 reshape(const BaseCube<typename T1::elem_type,T1>& X, const uword in_n_rows, const uword in_n_cols, const uword in_n_slices, const uword dim = 0)
@@ -64,6 +77,7 @@ reshape(const BaseCube<typename T1::elem_type,T1>& X, const uword in_n_rows, con
 
 
 template<typename T1>
+arma_warn_unused
 inline
 const OpCube<T1, op_reshape_ext>
 reshape(const BaseCube<typename T1::elem_type,T1>& X, const SizeCube& s, const uword dim = 0)
@@ -78,6 +92,7 @@ reshape(const BaseCube<typename T1::elem_type,T1>& X, const SizeCube& s, const u
 
 
 template<typename T1>
+arma_warn_unused
 inline
 const SpOp<T1, spop_reshape>
 reshape(const SpBase<typename T1::elem_type, T1>& X, const uword in_n_rows, const uword in_n_cols)
@@ -90,6 +105,7 @@ reshape(const SpBase<typename T1::elem_type, T1>& X, const uword in_n_rows, cons
 
 
 template<typename T1>
+arma_warn_unused
 inline
 const SpOp<T1, spop_reshape>
 reshape(const SpBase<typename T1::elem_type, T1>& X, const SizeMat& s)

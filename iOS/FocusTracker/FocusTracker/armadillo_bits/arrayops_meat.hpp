@@ -1,9 +1,17 @@
-// Copyright (C) 2011-2015 Conrad Sanderson
-// Copyright (C) 2011-2015 NICTA (www.nicta.com.au)
+// Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
+// Copyright 2008-2016 National ICT Australia (NICTA)
 // 
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// ------------------------------------------------------------------------
 
 
 //! \addtogroup arrayops
@@ -17,7 +25,7 @@ arma_inline
 void
 arrayops::copy(eT* dest, const eT* src, const uword n_elem)
   {
-  if( (n_elem <= 16) && (is_cx<eT>::no) )
+  if( (n_elem <= 9) && (is_cx<eT>::no) )
     {
     arrayops::copy_small(dest, src, n_elem);
     }
@@ -37,13 +45,6 @@ arrayops::copy_small(eT* dest, const eT* src, const uword n_elem)
   {
   switch(n_elem)
     {
-    case 16:  dest[15] = src[15];
-    case 15:  dest[14] = src[14];
-    case 14:  dest[13] = src[13];
-    case 13:  dest[12] = src[12];
-    case 12:  dest[11] = src[11];
-    case 11:  dest[10] = src[10];
-    case 10:  dest[ 9] = src[ 9];
     case  9:  dest[ 8] = src[ 8];
     case  8:  dest[ 7] = src[ 7];
     case  7:  dest[ 6] = src[ 6];
@@ -131,6 +132,34 @@ void
 arrayops::fill_zeros(eT* dest, const uword n_elem)
   {
   arrayops::inplace_set(dest, eT(0), n_elem);
+  }
+
+
+
+template<typename eT>
+arma_hot
+inline
+void
+arrayops::replace(eT* mem, const uword n_elem, const eT old_val, const eT new_val)
+  {
+  if(arma_isnan(old_val))
+    {
+    for(uword i=0; i<n_elem; ++i)
+      {
+      eT& val = mem[i];
+      
+      val = (arma_isnan(val)) ? new_val : val;
+      }
+    }
+  else
+    {
+    for(uword i=0; i<n_elem; ++i)
+      {
+      eT& val = mem[i];
+      
+      val = (val == old_val) ? new_val : val;
+      }
+    }
   }
 
 
@@ -568,7 +597,7 @@ arrayops::inplace_set(eT* dest, const eT val, const uword n_elem)
   {
   typedef typename get_pod_type<eT>::result pod_type;
   
-  if( (n_elem <= 16) && (is_cx<eT>::no) )
+  if( (n_elem <= 9) && (is_cx<eT>::no) )
     {
     arrayops::inplace_set_small(dest, val, n_elem);
     }
@@ -637,13 +666,6 @@ arrayops::inplace_set_small(eT* dest, const eT val, const uword n_elem)
   {
   switch(n_elem)
     {
-    case 16: dest[15] = val;
-    case 15: dest[14] = val;
-    case 14: dest[13] = val;
-    case 13: dest[12] = val;
-    case 12: dest[11] = val;
-    case 11: dest[10] = val;
-    case 10: dest[ 9] = val;
     case  9: dest[ 8] = val;
     case  8: dest[ 7] = val;
     case  7: dest[ 6] = val;
@@ -887,7 +909,6 @@ arrayops::inplace_div_base(eT* dest, const eT val, const uword n_elem)
 
 template<typename eT>
 arma_hot
-arma_pure
 inline
 eT
 arrayops::accumulate(const eT* src, const uword n_elem)
@@ -935,7 +956,6 @@ arrayops::accumulate(const eT* src, const uword n_elem)
 
 template<typename eT>
 arma_hot
-arma_pure
 inline
 eT
 arrayops::product(const eT* src, const uword n_elem)
@@ -963,7 +983,6 @@ arrayops::product(const eT* src, const uword n_elem)
 
 template<typename eT>
 arma_hot
-arma_pure
 inline
 bool
 arrayops::is_finite(const eT* src, const uword n_elem)
@@ -996,7 +1015,6 @@ arrayops::is_finite(const eT* src, const uword n_elem)
 
 template<typename eT>
 arma_hot
-arma_pure
 inline
 bool
 arrayops::has_inf(const eT* src, const uword n_elem)
@@ -1023,7 +1041,6 @@ arrayops::has_inf(const eT* src, const uword n_elem)
 
 template<typename eT>
 arma_hot
-arma_pure
 inline
 bool
 arrayops::has_nan(const eT* src, const uword n_elem)
@@ -1044,204 +1061,6 @@ arrayops::has_nan(const eT* src, const uword n_elem)
     }
   
   return false;
-  }
-
-
-
-// TODO: this function is currently not used
-template<typename eT>
-arma_hot
-arma_pure
-inline
-typename get_pod_type<eT>::result
-arrayops::norm_1(const eT* src, const uword n_elem)
-  {
-  typedef typename get_pod_type<eT>::result T;
-  
-  T acc = T(0);
-  
-  uword i,j;
-  
-  for(i=0, j=1; j<n_elem; i+=2, j+=2)
-    {
-    acc += std::abs(src[i]);
-    acc += std::abs(src[j]);
-    }
-  
-  if(i < n_elem)
-    {
-    acc += std::abs(src[i]);
-    }
-  
-  return acc;
-  }
-
-
-
-// TODO: this function is currently not used
-template<typename eT>
-arma_hot
-arma_pure
-inline
-eT
-arrayops::norm_2(const eT* src, const uword n_elem, const typename arma_not_cx<eT>::result* junk)
-  {
-  arma_ignore(junk);
-  
-  eT acc = eT(0);
-  
-  uword i,j;
-  
-  for(i=0, j=1; j<n_elem; i+=2, j+=2)
-    {
-    const eT tmp_i = src[i];
-    const eT tmp_j = src[j];
-    
-    acc += tmp_i * tmp_i;
-    acc += tmp_j * tmp_j;
-    }
-  
-  if(i < n_elem)
-    {
-    const eT tmp_i = src[i];
-    
-    acc += tmp_i * tmp_i;
-    }
-  
-  return std::sqrt(acc);
-  }
-
-
-
-// TODO: this function is currently not used
-template<typename T>
-arma_hot
-arma_pure
-inline
-T
-arrayops::norm_2(const std::complex<T>* src, const uword n_elem)
-  {
-  T acc = T(0);
-  
-  uword i,j;
-  
-  for(i=0, j=1; j<n_elem; i+=2, j+=2)
-    {
-    const T tmp_i = std::abs(src[i]);
-    const T tmp_j = std::abs(src[j]);
-    
-    acc += tmp_i * tmp_i;
-    acc += tmp_j * tmp_j;
-    }
-  
-  if(i < n_elem)
-    {
-    const T tmp_i = std::abs(src[i]);
-    
-    acc += tmp_i * tmp_i;
-    }
-  
-  return std::sqrt(acc);
-  }
-
-
-
-// TODO: this function is currently not used
-template<typename eT>
-arma_hot
-arma_pure
-inline
-typename get_pod_type<eT>::result
-arrayops::norm_k(const eT* src, const uword n_elem, const int k)
-  {
-  typedef typename get_pod_type<eT>::result T;
-  
-  T acc = T(0);
-  
-  uword i,j;
-  
-  for(i=0, j=1; j<n_elem; i+=2, j+=2)
-    {
-    acc += std::pow(std::abs(src[i]), k);
-    acc += std::pow(std::abs(src[j]), k);
-    }
-  
-  if(i < n_elem)
-    {
-    acc += std::pow(std::abs(src[i]), k);
-    }
-  
-  return std::pow(acc, T(1)/T(k));
-  }
-
-
-
-// TODO: this function is currently not used
-template<typename eT>
-arma_hot
-arma_pure
-inline
-typename get_pod_type<eT>::result
-arrayops::norm_max(const eT* src, const uword n_elem)
-  {
-  typedef typename get_pod_type<eT>::result T;
-  
-  T max_val = std::abs(src[0]);
-  
-  uword i,j;
-  
-  for(i=1, j=2; j<n_elem; i+=2, j+=2)
-    {
-    const T tmp_i = std::abs(src[i]);
-    const T tmp_j = std::abs(src[j]);
-    
-    if(max_val < tmp_i) { max_val = tmp_i; }
-    if(max_val < tmp_j) { max_val = tmp_j; }
-    }
-  
-  if(i < n_elem)
-    {
-    const T tmp_i = std::abs(src[i]);
-    
-    if(max_val < tmp_i) { max_val = tmp_i; }
-    }
-  
-  return max_val;
-  }
-
-
-
-// TODO: this function is currently not used
-template<typename eT>
-arma_hot
-arma_pure
-inline
-typename get_pod_type<eT>::result
-arrayops::norm_min(const eT* src, const uword n_elem)
-  {
-  typedef typename get_pod_type<eT>::result T;
-  
-  T min_val = std::abs(src[0]);
-  
-  uword i,j;
-  
-  for(i=1, j=2; j<n_elem; i+=2, j+=2)
-    {
-    const T tmp_i = std::abs(src[i]);
-    const T tmp_j = std::abs(src[j]);
-    
-    if(min_val > tmp_i) { min_val = tmp_i; }
-    if(min_val > tmp_j) { min_val = tmp_j; }
-    }
-  
-  if(i < n_elem)
-    {
-    const T tmp_i = std::abs(src[i]);
-    
-    if(min_val > tmp_i) { min_val = tmp_i; }
-    }
-  
-  return min_val;
   }
 
 

@@ -1,10 +1,17 @@
-// Copyright (C) 2008-2015 Conrad Sanderson
-// Copyright (C) 2008-2015 NICTA (www.nicta.com.au)
-// Copyright (C) 2012 Ryan Curtin
+// Copyright 2008-2016 Conrad Sanderson (http://conradsanderson.id.au)
+// Copyright 2008-2016 National ICT Australia (NICTA)
 // 
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+// ------------------------------------------------------------------------
 
 
 //! \addtogroup arma_ostream
@@ -283,13 +290,17 @@ arma_ostream::print_elem_zero(std::ostream& o, const bool modify)
   {
   if(modify == true)
     {
-    const std::streamsize orig_precision = o.precision();
+    const ios::fmtflags   save_flags     = o.flags();
+    const std::streamsize save_precision = o.precision();
     
+    o.unsetf(ios::scientific);
+    o.setf(ios::fixed);
     o.precision(0);
     
     o << eT(0);
     
-    o.precision(orig_precision);
+    o.flags(save_flags);
+    o.precision(save_precision);
     }
   else
     {
@@ -395,6 +406,7 @@ arma_ostream::print_elem(std::ostream& o, const std::complex<T>& x, const bool m
 
 //! Print a matrix to the specified stream
 template<typename eT>
+arma_cold
 inline
 void
 arma_ostream::print(std::ostream& o, const Mat<eT>& m, const bool modify)
@@ -456,6 +468,7 @@ arma_ostream::print(std::ostream& o, const Mat<eT>& m, const bool modify)
 
 //! Print a cube to the specified stream
 template<typename eT>
+arma_cold
 inline
 void
 arma_ostream::print(std::ostream& o, const Cube<eT>& x, const bool modify)
@@ -464,15 +477,14 @@ arma_ostream::print(std::ostream& o, const Cube<eT>& x, const bool modify)
   
   const arma_ostream_state stream_state(o);
   
-  const std::streamsize cell_width = modify ? arma_ostream::modify_stream(o, x.memptr(), x.n_elem) : o.width();
-  
   if(x.is_empty() == false)
     {
     for(uword slice=0; slice < x.n_slices; ++slice)
       {
+      const Mat<eT> tmp(const_cast<eT*>(x.slice_memptr(slice)), x.n_rows, x.n_cols, false);
+      
       o << "[cube slice " << slice << ']' << '\n';
-      o.width(cell_width);
-      arma_ostream::print(o, x.slice(slice), false);
+      arma_ostream::print(o, tmp, modify);
       o << '\n';
       }
     }
@@ -490,6 +502,7 @@ arma_ostream::print(std::ostream& o, const Cube<eT>& x, const bool modify)
 //! Print a field to the specified stream
 //! Assumes type oT can be printed, i.e. oT has std::ostream& operator<< (std::ostream&, const oT&) 
 template<typename oT>
+arma_cold
 inline
 void
 arma_ostream::print(std::ostream& o, const field<oT>& x)
@@ -558,6 +571,7 @@ arma_ostream::print(std::ostream& o, const field<oT>& x)
 //! Print a subfield to the specified stream
 //! Assumes type oT can be printed, i.e. oT has std::ostream& operator<< (std::ostream&, const oT&) 
 template<typename oT>
+arma_cold
 inline
 void
 arma_ostream::print(std::ostream& o, const subview_field<oT>& x)
@@ -572,41 +586,48 @@ arma_ostream::print(std::ostream& o, const subview_field<oT>& x)
   const uword x_n_cols   = x.n_cols;
   const uword x_n_slices = x.n_slices;
   
-  if(x_n_slices == 1)
+  if(x.is_empty() == false)
     {
-    for(uword col=0; col<x_n_cols; ++col)
+    if(x_n_slices == 1)
       {
-      o << "[field column " << col << ']' << '\n'; 
-      for(uword row=0; row<x_n_rows; ++row)
-        {
-        o.width(cell_width);
-        o << x.at(row,col) << '\n';
-        }
-      
-      o << '\n';
-      }
-    }
-  else
-    {
-    for(uword slice=0; slice<x_n_slices; ++slice)
-      {
-      o << "[field slice " << slice << ']' << '\n';
-      
       for(uword col=0; col<x_n_cols; ++col)
         {
-        o << "[field column " << col << ']' << '\n';
-        
+        o << "[field column " << col << ']' << '\n'; 
         for(uword row=0; row<x_n_rows; ++row)
           {
           o.width(cell_width);
-          o << x.at(row,col,slice) << '\n';
+          o << x.at(row,col) << '\n';
           }
         
         o << '\n';
         }
-      
-      o << '\n';
       }
+    else
+      {
+      for(uword slice=0; slice<x_n_slices; ++slice)
+        {
+        o << "[field slice " << slice << ']' << '\n';
+        
+        for(uword col=0; col<x_n_cols; ++col)
+          {
+          o << "[field column " << col << ']' << '\n';
+          
+          for(uword row=0; row<x_n_rows; ++row)
+            {
+            o.width(cell_width);
+            o << x.at(row,col,slice) << '\n';
+            }
+          
+          o << '\n';
+          }
+        
+        o << '\n';
+        }
+      }
+    }
+  else
+    {
+    o << "[field size: " << x_n_rows << 'x' << x_n_cols << 'x' << x_n_slices << "]\n";
     }
   
   o.flush();
@@ -616,6 +637,7 @@ arma_ostream::print(std::ostream& o, const subview_field<oT>& x)
 
 
 template<typename eT>
+arma_cold
 inline
 void
 arma_ostream::print_dense(std::ostream& o, const SpMat<eT>& m, const bool modify)
@@ -721,6 +743,7 @@ arma_ostream::print_dense(std::ostream& o, const SpMat<eT>& m, const bool modify
 
 
 template<typename eT>
+arma_cold
 inline
 void
 arma_ostream::print(std::ostream& o, const SpMat<eT>& m, const bool modify)
@@ -791,6 +814,7 @@ arma_ostream::print(std::ostream& o, const SpMat<eT>& m, const bool modify)
 
 
 
+arma_cold
 inline
 void
 arma_ostream::print(std::ostream& o, const SizeMat& S)
@@ -812,6 +836,7 @@ arma_ostream::print(std::ostream& o, const SizeMat& S)
 
 
 
+arma_cold
 inline
 void
 arma_ostream::print(std::ostream& o, const SizeCube& S)
