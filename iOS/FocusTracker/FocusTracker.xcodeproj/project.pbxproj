@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2A7D57021E99700D002679E0 /* PulseDetector.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2A7D57011E99700D002679E0 /* PulseDetector.mm */; };
+		2A7D57051E997245002679E0 /* ica.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2A7D57031E997245002679E0 /* ica.cpp */; };
 		5A2AE7AA1E99649C0061039A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A2AE7A91E99649C0061039A /* main.m */; };
 		5A2AE7AD1E99649C0061039A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A2AE7AC1E99649C0061039A /* AppDelegate.m */; };
 		5A2AE7B01E99649C0061039A /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A2AE7AF1E99649C0061039A /* ViewController.m */; };
@@ -14,7 +16,7 @@
 		5A2AE7B51E99649C0061039A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5A2AE7B41E99649C0061039A /* Assets.xcassets */; };
 		5A2AE7B81E99649C0061039A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5A2AE7B61E99649C0061039A /* LaunchScreen.storyboard */; };
 		5A2AE7C11E9965B10061039A /* DrawingUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A2AE7C01E9965B10061039A /* DrawingUtility.m */; };
-		5A2AE7C41E996A9F0061039A /* DataBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A2AE7C31E996A9F0061039A /* DataBuffer.m */; };
+		5A2AE7C41E996A9F0061039A /* DataBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5A2AE7C31E996A9F0061039A /* DataBuffer.mm */; };
 		5A2AE97A1E996AF50061039A /* armadillo in Resources */ = {isa = PBXBuildFile; fileRef = 5A2AE7C51E996AF40061039A /* armadillo */; };
 		5A2AE97B1E996AF50061039A /* config.hpp.cmake in Resources */ = {isa = PBXBuildFile; fileRef = 5A2AE7E71E996AF40061039A /* config.hpp.cmake */; };
 		BB0E556332575A14B3C03F45 /* libPods-FocusTracker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C92BA2A08D63C5E9DA4996E /* libPods-FocusTracker.a */; };
@@ -22,6 +24,10 @@
 
 /* Begin PBXFileReference section */
 		055C6993564DDA97D2DA4699 /* Pods-FocusTracker.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FocusTracker.release.xcconfig"; path = "Pods/Target Support Files/Pods-FocusTracker/Pods-FocusTracker.release.xcconfig"; sourceTree = "<group>"; };
+		2A7D57001E99700D002679E0 /* PulseDetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PulseDetector.h; sourceTree = "<group>"; };
+		2A7D57011E99700D002679E0 /* PulseDetector.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PulseDetector.mm; sourceTree = "<group>"; };
+		2A7D57031E997245002679E0 /* ica.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ica.cpp; sourceTree = "<group>"; };
+		2A7D57041E997245002679E0 /* ica.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ica.h; sourceTree = "<group>"; };
 		5A2AE7A51E99649C0061039A /* FocusTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FocusTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5A2AE7A91E99649C0061039A /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		5A2AE7AB1E99649C0061039A /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -35,7 +41,7 @@
 		5A2AE7BF1E9965B10061039A /* DrawingUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DrawingUtility.h; sourceTree = "<group>"; };
 		5A2AE7C01E9965B10061039A /* DrawingUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DrawingUtility.m; sourceTree = "<group>"; };
 		5A2AE7C21E996A9F0061039A /* DataBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataBuffer.h; sourceTree = "<group>"; };
-		5A2AE7C31E996A9F0061039A /* DataBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataBuffer.m; sourceTree = "<group>"; };
+		5A2AE7C31E996A9F0061039A /* DataBuffer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DataBuffer.mm; sourceTree = "<group>"; };
 		5A2AE7C51E996AF40061039A /* armadillo */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = armadillo; sourceTree = "<group>"; };
 		5A2AE7C71E996AF40061039A /* access.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = access.hpp; sourceTree = "<group>"; };
 		5A2AE7C81E996AF40061039A /* arma_boost.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = arma_boost.hpp; sourceTree = "<group>"; };
@@ -520,7 +526,9 @@
 				5A2AE7C51E996AF40061039A /* armadillo */,
 				5A2AE7C61E996AF40061039A /* armadillo_bits */,
 				5A2AE7C21E996A9F0061039A /* DataBuffer.h */,
-				5A2AE7C31E996A9F0061039A /* DataBuffer.m */,
+				5A2AE7C31E996A9F0061039A /* DataBuffer.mm */,
+				2A7D57031E997245002679E0 /* ica.cpp */,
+				2A7D57041E997245002679E0 /* ica.h */,
 				5A2AE7BF1E9965B10061039A /* DrawingUtility.h */,
 				5A2AE7C01E9965B10061039A /* DrawingUtility.m */,
 				5A2AE7AB1E99649C0061039A /* AppDelegate.h */,
@@ -532,6 +540,8 @@
 				5A2AE7B61E99649C0061039A /* LaunchScreen.storyboard */,
 				5A2AE7B91E99649C0061039A /* Info.plist */,
 				5A2AE7A81E99649C0061039A /* Supporting Files */,
+				2A7D57001E99700D002679E0 /* PulseDetector.h */,
+				2A7D57011E99700D002679E0 /* PulseDetector.mm */,
 			);
 			path = FocusTracker;
 			sourceTree = "<group>";
@@ -1122,7 +1132,9 @@
 			files = (
 				5A2AE7B01E99649C0061039A /* ViewController.m in Sources */,
 				5A2AE7AD1E99649C0061039A /* AppDelegate.m in Sources */,
-				5A2AE7C41E996A9F0061039A /* DataBuffer.m in Sources */,
+				5A2AE7C41E996A9F0061039A /* DataBuffer.mm in Sources */,
+				2A7D57051E997245002679E0 /* ica.cpp in Sources */,
+				2A7D57021E99700D002679E0 /* PulseDetector.mm in Sources */,
 				5A2AE7AA1E99649C0061039A /* main.m in Sources */,
 				5A2AE7C11E9965B10061039A /* DrawingUtility.m in Sources */,
 			);

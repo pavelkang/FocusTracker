@@ -11,6 +11,7 @@
 
 #import "ViewController.h"
 #import "DrawingUtility.h"
+#import "DataBuffer.h"
 
 @interface ViewController ()<AVCaptureVideoDataOutputSampleBufferDelegate>
 
@@ -36,6 +37,7 @@
     
     self.placeHolder = [[UIView alloc] initWithFrame:self.view.frame];
     self.overlayView = [[UIView alloc] initWithFrame:self.view.frame];
+    
     
     [self.view addSubview:self.placeHolder];
     [self.view addSubview:self.overlayView];
@@ -416,12 +418,5 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     }
     return nil;
 }
-
-#pragma mark - Calculate pulse based on RGB
-
-- (void)getPulse {
-    //
-}
-
 
 @end

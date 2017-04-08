@@ -10,4 +10,11 @@
 
 @implementation DataBuffer
 
+- (BOOL)hasData{
+    
+}
+- (arma::mat)getData{
+    
+}
+
 @end

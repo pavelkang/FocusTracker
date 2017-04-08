@@ -7,11 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "armadillo"
+#include "armadillo"
 
 @interface DataBuffer : NSObject
 
-- (void)hasData;
-- (arma::fmat)getData;
+- (BOOL)hasData;
+- (arma::mat)getData;
 
 @end
