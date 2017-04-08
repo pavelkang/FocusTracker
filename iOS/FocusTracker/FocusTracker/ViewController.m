@@ -417,5 +417,11 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     return nil;
 }
 
+#pragma mark - Calculate pulse based on RGB
+
+- (void)getPulse {
+    //
+}
+
 
 @end
