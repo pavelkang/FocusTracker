@@ -181,3 +181,7 @@ Carthage
 # `pod install` in .travis.yml
 #
 Pods/
+CMakeCache.txt
+CMakeFiles
+cmake_install.cmake
+Makefile

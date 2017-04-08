@@ -1,0 +1,4 @@
+/Users/kai/FocusTracker/CMakeFiles/armaica.dir
+/Users/kai/FocusTracker/CMakeFiles/rebuild_cache.dir
+/Users/kai/FocusTracker/CMakeFiles/edit_cache.dir
+/Users/kai/FocusTracker/CMakeFiles/ica_bin.dir
