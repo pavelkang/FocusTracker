@@ -14,9 +14,11 @@
 		5A2AE7B51E99649C0061039A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5A2AE7B41E99649C0061039A /* Assets.xcassets */; };
 		5A2AE7B81E99649C0061039A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5A2AE7B61E99649C0061039A /* LaunchScreen.storyboard */; };
 		5A2AE7C11E9965B10061039A /* DrawingUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A2AE7C01E9965B10061039A /* DrawingUtility.m */; };
-		5A2AE7C41E996A9F0061039A /* DataBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A2AE7C31E996A9F0061039A /* DataBuffer.m */; };
+		5A2AE7C41E996A9F0061039A /* DataBuffer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5A2AE7C31E996A9F0061039A /* DataBuffer.mm */; };
 		5A2AE97A1E996AF50061039A /* armadillo in Resources */ = {isa = PBXBuildFile; fileRef = 5A2AE7C51E996AF40061039A /* armadillo */; };
 		5A2AE97B1E996AF50061039A /* config.hpp.cmake in Resources */ = {isa = PBXBuildFile; fileRef = 5A2AE7E71E996AF40061039A /* config.hpp.cmake */; };
+		5A2AE97E1E9977720061039A /* UIImage+Crop.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A2AE97D1E9977720061039A /* UIImage+Crop.m */; };
+		5A2AE9831E997C6B0061039A /* ImageAverage.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5A2AE9821E997C6B0061039A /* ImageAverage.mm */; };
 		BB0E556332575A14B3C03F45 /* libPods-FocusTracker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C92BA2A08D63C5E9DA4996E /* libPods-FocusTracker.a */; };
 /* End PBXBuildFile section */
 
@@ -35,7 +37,7 @@
 		5A2AE7BF1E9965B10061039A /* DrawingUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DrawingUtility.h; sourceTree = "<group>"; };
 		5A2AE7C01E9965B10061039A /* DrawingUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DrawingUtility.m; sourceTree = "<group>"; };
 		5A2AE7C21E996A9F0061039A /* DataBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataBuffer.h; sourceTree = "<group>"; };
-		5A2AE7C31E996A9F0061039A /* DataBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataBuffer.m; sourceTree = "<group>"; };
+		5A2AE7C31E996A9F0061039A /* DataBuffer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DataBuffer.mm; sourceTree = "<group>"; };
 		5A2AE7C51E996AF40061039A /* armadillo */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = armadillo; sourceTree = "<group>"; };
 		5A2AE7C71E996AF40061039A /* access.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = access.hpp; sourceTree = "<group>"; };
 		5A2AE7C81E996AF40061039A /* arma_boost.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = arma_boost.hpp; sourceTree = "<group>"; };
@@ -472,6 +474,10 @@
 		5A2AE9771E996AF50061039A /* xtrans_mat_meat.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xtrans_mat_meat.hpp; sourceTree = "<group>"; };
 		5A2AE9781E996AF50061039A /* xvec_htrans_bones.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xvec_htrans_bones.hpp; sourceTree = "<group>"; };
 		5A2AE9791E996AF50061039A /* xvec_htrans_meat.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = xvec_htrans_meat.hpp; sourceTree = "<group>"; };
+		5A2AE97C1E9977720061039A /* UIImage+Crop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+Crop.h"; sourceTree = "<group>"; };
+		5A2AE97D1E9977720061039A /* UIImage+Crop.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+Crop.m"; sourceTree = "<group>"; };
+		5A2AE9811E997C6B0061039A /* ImageAverage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageAverage.h; sourceTree = "<group>"; };
+		5A2AE9821E997C6B0061039A /* ImageAverage.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ImageAverage.mm; sourceTree = "<group>"; };
 		7E6B06C7ABB2A42E1AA7D65E /* Pods-FocusTracker.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FocusTracker.debug.xcconfig"; path = "Pods/Target Support Files/Pods-FocusTracker/Pods-FocusTracker.debug.xcconfig"; sourceTree = "<group>"; };
 		8C92BA2A08D63C5E9DA4996E /* libPods-FocusTracker.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-FocusTracker.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -520,7 +526,7 @@
 				5A2AE7C51E996AF40061039A /* armadillo */,
 				5A2AE7C61E996AF40061039A /* armadillo_bits */,
 				5A2AE7C21E996A9F0061039A /* DataBuffer.h */,
-				5A2AE7C31E996A9F0061039A /* DataBuffer.m */,
+				5A2AE7C31E996A9F0061039A /* DataBuffer.mm */,
 				5A2AE7BF1E9965B10061039A /* DrawingUtility.h */,
 				5A2AE7C01E9965B10061039A /* DrawingUtility.m */,
 				5A2AE7AB1E99649C0061039A /* AppDelegate.h */,
@@ -532,6 +538,10 @@
 				5A2AE7B61E99649C0061039A /* LaunchScreen.storyboard */,
 				5A2AE7B91E99649C0061039A /* Info.plist */,
 				5A2AE7A81E99649C0061039A /* Supporting Files */,
+				5A2AE97C1E9977720061039A /* UIImage+Crop.h */,
+				5A2AE97D1E9977720061039A /* UIImage+Crop.m */,
+				5A2AE9811E997C6B0061039A /* ImageAverage.h */,
+				5A2AE9821E997C6B0061039A /* ImageAverage.mm */,
 			);
 			path = FocusTracker;
 			sourceTree = "<group>";
@@ -1122,8 +1132,10 @@
 			files = (
 				5A2AE7B01E99649C0061039A /* ViewController.m in Sources */,
 				5A2AE7AD1E99649C0061039A /* AppDelegate.m in Sources */,
-				5A2AE7C41E996A9F0061039A /* DataBuffer.m in Sources */,
+				5A2AE7C41E996A9F0061039A /* DataBuffer.mm in Sources */,
+				5A2AE97E1E9977720061039A /* UIImage+Crop.m in Sources */,
 				5A2AE7AA1E99649C0061039A /* main.m in Sources */,
+				5A2AE9831E997C6B0061039A /* ImageAverage.mm in Sources */,
 				5A2AE7C11E9965B10061039A /* DrawingUtility.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1248,6 +1260,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = HF64UGXDP4;
+				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = FocusTracker/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1262,6 +1279,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = HF64UGXDP4;
+				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = FocusTracker/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

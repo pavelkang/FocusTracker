@@ -11,7 +11,9 @@
 
 @interface DataBuffer : NSObject
 
-- (void)hasData;
-- (arma::fmat)getData;
+- (id)initWithMaxLength:(int)length;
+- (BOOL)hasData;
+- (void)pushData:(double)r g:(double)g b:(double)b;
+- (arma::mat)getData;
 
 @end

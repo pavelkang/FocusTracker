@@ -1,13 +1,15 @@
 //
-//  DataBuffer.m
+//  UIImage+Crop.h
 //  FocusTracker
 //
 //  Created by Ted Li on 4/8/17.
 //  Copyright © 2017 Ted Li. All rights reserved.
 //
 
-#import "DataBuffer.h"
+#import <UIKit/UIKit.h>
 
-@implementation DataBuffer
+@interface UIImage (Crop)
+
+- (UIImage *)crop:(CGRect)rect;
 
 @end

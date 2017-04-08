@@ -1,3 +1,4 @@
 target 'FocusTracker' do
   pod 'GoogleMobileVision/FaceDetector'
+  pod 'OpenCV', '2.4.9'
 end
