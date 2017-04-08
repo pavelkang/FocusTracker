@@ -1,0 +1,407 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		5A2AE7AA1E99649C0061039A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A2AE7A91E99649C0061039A /* main.m */; };
+		5A2AE7AD1E99649C0061039A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A2AE7AC1E99649C0061039A /* AppDelegate.m */; };
+		5A2AE7B01E99649C0061039A /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A2AE7AF1E99649C0061039A /* ViewController.m */; };
+		5A2AE7B31E99649C0061039A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5A2AE7B11E99649C0061039A /* Main.storyboard */; };
+		5A2AE7B51E99649C0061039A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5A2AE7B41E99649C0061039A /* Assets.xcassets */; };
+		5A2AE7B81E99649C0061039A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5A2AE7B61E99649C0061039A /* LaunchScreen.storyboard */; };
+		5A2AE7C11E9965B10061039A /* DrawingUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 5A2AE7C01E9965B10061039A /* DrawingUtility.m */; };
+		BB0E556332575A14B3C03F45 /* libPods-FocusTracker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C92BA2A08D63C5E9DA4996E /* libPods-FocusTracker.a */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		055C6993564DDA97D2DA4699 /* Pods-FocusTracker.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FocusTracker.release.xcconfig"; path = "Pods/Target Support Files/Pods-FocusTracker/Pods-FocusTracker.release.xcconfig"; sourceTree = "<group>"; };
+		5A2AE7A51E99649C0061039A /* FocusTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FocusTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		5A2AE7A91E99649C0061039A /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		5A2AE7AB1E99649C0061039A /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		5A2AE7AC1E99649C0061039A /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		5A2AE7AE1E99649C0061039A /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		5A2AE7AF1E99649C0061039A /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		5A2AE7B21E99649C0061039A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		5A2AE7B41E99649C0061039A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		5A2AE7B71E99649C0061039A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		5A2AE7B91E99649C0061039A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5A2AE7BF1E9965B10061039A /* DrawingUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DrawingUtility.h; sourceTree = "<group>"; };
+		5A2AE7C01E9965B10061039A /* DrawingUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DrawingUtility.m; sourceTree = "<group>"; };
+		7E6B06C7ABB2A42E1AA7D65E /* Pods-FocusTracker.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FocusTracker.debug.xcconfig"; path = "Pods/Target Support Files/Pods-FocusTracker/Pods-FocusTracker.debug.xcconfig"; sourceTree = "<group>"; };
+		8C92BA2A08D63C5E9DA4996E /* libPods-FocusTracker.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-FocusTracker.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		5A2AE7A21E99649C0061039A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BB0E556332575A14B3C03F45 /* libPods-FocusTracker.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0F441828C7F7E9EDF573982C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				8C92BA2A08D63C5E9DA4996E /* libPods-FocusTracker.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		5A2AE79C1E99649C0061039A = {
+			isa = PBXGroup;
+			children = (
+				5A2AE7A71E99649C0061039A /* FocusTracker */,
+				5A2AE7A61E99649C0061039A /* Products */,
+				7B68DC7542B546C388CB6C5A /* Pods */,
+				0F441828C7F7E9EDF573982C /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		5A2AE7A61E99649C0061039A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				5A2AE7A51E99649C0061039A /* FocusTracker.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		5A2AE7A71E99649C0061039A /* FocusTracker */ = {
+			isa = PBXGroup;
+			children = (
+				5A2AE7BF1E9965B10061039A /* DrawingUtility.h */,
+				5A2AE7C01E9965B10061039A /* DrawingUtility.m */,
+				5A2AE7AB1E99649C0061039A /* AppDelegate.h */,
+				5A2AE7AC1E99649C0061039A /* AppDelegate.m */,
+				5A2AE7AE1E99649C0061039A /* ViewController.h */,
+				5A2AE7AF1E99649C0061039A /* ViewController.m */,
+				5A2AE7B11E99649C0061039A /* Main.storyboard */,
+				5A2AE7B41E99649C0061039A /* Assets.xcassets */,
+				5A2AE7B61E99649C0061039A /* LaunchScreen.storyboard */,
+				5A2AE7B91E99649C0061039A /* Info.plist */,
+				5A2AE7A81E99649C0061039A /* Supporting Files */,
+			);
+			path = FocusTracker;
+			sourceTree = "<group>";
+		};
+		5A2AE7A81E99649C0061039A /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				5A2AE7A91E99649C0061039A /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		7B68DC7542B546C388CB6C5A /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				7E6B06C7ABB2A42E1AA7D65E /* Pods-FocusTracker.debug.xcconfig */,
+				055C6993564DDA97D2DA4699 /* Pods-FocusTracker.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		5A2AE7A41E99649C0061039A /* FocusTracker */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5A2AE7BC1E99649C0061039A /* Build configuration list for PBXNativeTarget "FocusTracker" */;
+			buildPhases = (
+				8485CD6816554F71B512CA95 /* [CP] Check Pods Manifest.lock */,
+				5A2AE7A11E99649C0061039A /* Sources */,
+				5A2AE7A21E99649C0061039A /* Frameworks */,
+				5A2AE7A31E99649C0061039A /* Resources */,
+				F3D2C0E96F770AD732501F80 /* [CP] Embed Pods Frameworks */,
+				135771583B9FC0AECFC3E40A /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FocusTracker;
+			productName = FocusTracker;
+			productReference = 5A2AE7A51E99649C0061039A /* FocusTracker.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		5A2AE79D1E99649C0061039A /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0830;
+				ORGANIZATIONNAME = "Ted Li";
+				TargetAttributes = {
+					5A2AE7A41E99649C0061039A = {
+						CreatedOnToolsVersion = 8.3;
+						DevelopmentTeam = HF64UGXDP4;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 5A2AE7A01E99649C0061039A /* Build configuration list for PBXProject "FocusTracker" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 5A2AE79C1E99649C0061039A;
+			productRefGroup = 5A2AE7A61E99649C0061039A /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				5A2AE7A41E99649C0061039A /* FocusTracker */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		5A2AE7A31E99649C0061039A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5A2AE7B81E99649C0061039A /* LaunchScreen.storyboard in Resources */,
+				5A2AE7B51E99649C0061039A /* Assets.xcassets in Resources */,
+				5A2AE7B31E99649C0061039A /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		135771583B9FC0AECFC3E40A /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-FocusTracker/Pods-FocusTracker-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		8485CD6816554F71B512CA95 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		F3D2C0E96F770AD732501F80 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-FocusTracker/Pods-FocusTracker-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		5A2AE7A11E99649C0061039A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5A2AE7B01E99649C0061039A /* ViewController.m in Sources */,
+				5A2AE7AD1E99649C0061039A /* AppDelegate.m in Sources */,
+				5A2AE7AA1E99649C0061039A /* main.m in Sources */,
+				5A2AE7C11E9965B10061039A /* DrawingUtility.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		5A2AE7B11E99649C0061039A /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				5A2AE7B21E99649C0061039A /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		5A2AE7B61E99649C0061039A /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				5A2AE7B71E99649C0061039A /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		5A2AE7BA1E99649C0061039A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		5A2AE7BB1E99649C0061039A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		5A2AE7BD1E99649C0061039A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7E6B06C7ABB2A42E1AA7D65E /* Pods-FocusTracker.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = HF64UGXDP4;
+				INFOPLIST_FILE = FocusTracker/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = wenxuanl.FocusTracker;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		5A2AE7BE1E99649C0061039A /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 055C6993564DDA97D2DA4699 /* Pods-FocusTracker.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = HF64UGXDP4;
+				INFOPLIST_FILE = FocusTracker/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = wenxuanl.FocusTracker;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		5A2AE7A01E99649C0061039A /* Build configuration list for PBXProject "FocusTracker" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5A2AE7BA1E99649C0061039A /* Debug */,
+				5A2AE7BB1E99649C0061039A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		5A2AE7BC1E99649C0061039A /* Build configuration list for PBXNativeTarget "FocusTracker" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5A2AE7BD1E99649C0061039A /* Debug */,
+				5A2AE7BE1E99649C0061039A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 5A2AE79D1E99649C0061039A /* Project object */;
+}

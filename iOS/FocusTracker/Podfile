@@ -1,0 +1,3 @@
+target 'FocusTracker' do
+  pod 'GoogleMobileVision/FaceDetector'
+end
