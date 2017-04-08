@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "armadillo"
+#include "armadillo"
 
 @interface DataBuffer : NSObject
 

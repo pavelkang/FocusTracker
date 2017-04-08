@@ -13,6 +13,7 @@
 #import "DrawingUtility.h"
 #import "UIImage+Crop.h"
 #import "ImageAverage.h"
+#import "DataBuffer.h"
 
 @interface ViewController ()<AVCaptureVideoDataOutputSampleBufferDelegate>
 
@@ -35,24 +36,25 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     self.placeHolder = [[UIView alloc] initWithFrame:self.view.frame];
     self.overlayView = [[UIView alloc] initWithFrame:self.view.frame];
-    
+
+
     [self.view addSubview:self.placeHolder];
     [self.view addSubview:self.overlayView];
-    
+
     self.videoDataOutputQueue = dispatch_queue_create("VideoDataOutputQueue", DISPATCH_QUEUE_SERIAL);
     self.session = [[AVCaptureSession alloc] init];
     self.session.sessionPreset = AVCaptureSessionPresetMedium;
     [self updateCameraSelection];
-    
+
     // Setup video processing pipeline.
     [self setupVideoProcessing];
-    
+
     // Setup camera preview.
     [self setupCameraPreview];
-    
+
     // Initialize the face detector.
     NSDictionary *options = @{
                               GMVDetectorFaceMinSize : @(0.3),
@@ -70,7 +72,7 @@
 
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
-    
+
     self.previewLayer.frame = self.view.layer.bounds;
     self.previewLayer.position = CGPointMake(CGRectGetMidX(self.previewLayer.frame),
                                              CGRectGetMidY(self.previewLayer.frame));
@@ -142,11 +144,11 @@
 - (void)captureOutput:(AVCaptureOutput *)captureOutput
 didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
        fromConnection:(AVCaptureConnection *)connection {
-    
+
     UIImage *image = [GMVUtility sampleBufferTo32RGBA:sampleBuffer];
-    
+
     AVCaptureDevicePosition devicePosition = AVCaptureDevicePositionFront;
-    
+
     // Establish the image orientation.
     UIDeviceOrientation deviceOrientation = [[UIDevice currentDevice] orientation];
     GMVImageOrientation orientation = [GMVUtility
@@ -159,13 +161,13 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     // Detect features using GMVDetector.
     NSArray<GMVFaceFeature *> *faces = [self.faceDetector featuresInImage:image options:options];
     NSLog(@"Detected %lu face(s).", (unsigned long)[faces count]);
-    
+
     // The video frames captured by the camera are a different size than the video preview.
     // Calculates the scale factors and offset to properly display the features.
     CMFormatDescriptionRef fdesc = CMSampleBufferGetFormatDescription(sampleBuffer);
     CGRect clap = CMVideoFormatDescriptionGetCleanAperture(fdesc, false);
     CGSize parentFrameSize = self.previewLayer.frame.size;
-    
+
     // Assume AVLayerVideoGravityResizeAspect
     CGFloat cameraRatio = clap.size.height / clap.size.width;
     CGFloat viewRatio = parentFrameSize.width / parentFrameSize.height;
@@ -177,7 +179,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         videoBox.size.height = parentFrameSize.height;
         videoBox.origin.x = (parentFrameSize.width - videoBox.size.width) / 2;
         videoBox.origin.y = (videoBox.size.height - parentFrameSize.height) / 2;
-        
+
         xScale = videoBox.size.width / clap.size.width;
         yScale = videoBox.size.height / clap.size.height;
     } else {
@@ -185,17 +187,17 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         videoBox.size.height = clap.size.width * (parentFrameSize.width / clap.size.height);
         videoBox.origin.x = (videoBox.size.width - parentFrameSize.width) / 2;
         videoBox.origin.y = (parentFrameSize.height - videoBox.size.height) / 2;
-        
+
         xScale = videoBox.size.width / clap.size.height;
         yScale = videoBox.size.height / clap.size.width;
     }
-    
+
     dispatch_sync(dispatch_get_main_queue(), ^{
         // Remove previously added feature views.
         for (UIView *featureView in self.overlayView.subviews) {
             [featureView removeFromSuperview];
         }
-        
+
         // Display detected features in overlay.
         for (GMVFaceFeature *face in faces) {
             CGRect faceRect = [self scaledRect:face.bounds
@@ -205,7 +207,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
             [DrawingUtility addRectangle:faceRect
                                   toView:self.overlayView
                                withColor:[UIColor redColor]];
-            
+
             // Tracking Id.
             if (face.hasTrackingID) {
                 CGPoint point = [self scaledPoint:face.bounds.origin
@@ -216,7 +218,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
                 label.text = [NSString stringWithFormat:@"id: %lu", (unsigned long)face.trackingID];
                 [self.overlayView addSubview:label];
             }
-            
+
             // Push to data buffer
             UIImage *croppedImage = [image crop:face.bounds];
             double r, g, b;
@@ -247,7 +249,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
                                         (__bridge NSString*)kCVPixelBufferPixelFormatTypeKey : @(kCVPixelFormatType_32BGRA)
                                         };
     [self.videoDataOutput setVideoSettings:rgbOutputSettings];
-    
+
     if (![self.session canAddOutput:self.videoDataOutput]) {
         [self cleanupVideoProcessing];
         NSLog(@"Failed to setup video output");
@@ -270,13 +272,13 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 
 - (void)updateCameraSelection {
     [self.session beginConfiguration];
-    
+
     // Remove old inputs
     NSArray *oldInputs = [self.session inputs];
     for (AVCaptureInput *oldInput in oldInputs) {
         [self.session removeInput:oldInput];
     }
-    
+
     AVCaptureDevicePosition desiredPosition = AVCaptureDevicePositionFront;
     AVCaptureDeviceInput *input = [self cameraForPosition:desiredPosition];
     if (!input) {
@@ -304,6 +306,5 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     }
     return nil;
 }
-
 
 @end
