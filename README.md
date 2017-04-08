@@ -40,8 +40,8 @@ working CNN model.
 
 ### Goals & Deliverables
 - **Final Goal**: In the end, we aim to deliver an iOS app that is able to evaluate how focused the user is, from video input signal, and alert the user to take a break if the algorithm thinks the user is not focused enough. The algorithm in the basic goal involves using the _Eulerian Video Magnification_ algorithm to detect the pulse, and use the pulse signal as the input to build a detector that detects focusness.
-- **Stretch Goal**: Besides pulse signal, we want to use the [Google Mobile Vision API](https://developers.google.com/vision/face-detection-concepts) to detect more input signals about the face of the user, and build a machine learning model utilizing this input. 
-- **Evaluation Method**: First step, we want to measure that our pulse detector actually detects the pulse signal correctly. We will compare its result against a physical pulse detecting device such as iWatch and expect the difference to be small. Second, we want to make sure that our model's estimated focusness decrease as time goes on, and alerts the user after a reasonable amount of time (between 30 minutes and 2 hours). Third, for our stretch goal, we can measure the performance of the model using the [Kaggle StayAlert challenge](https://www.kaggle.com/c/stayalert#description). 
+- **Stretch Goal**: Besides pulse signal, we want to use the [Google Mobile Vision API](https://developers.google.com/vision/face-detection-concepts) to detect more input signals about the face of the user, and build a machine learning model utilizing this input.
+- **Evaluation Method**: First step, we want to measure that our pulse detector actually detects the pulse signal correctly. We will compare its result against a physical pulse detecting device such as iWatch and expect the difference to be small. Second, we want to make sure that our model's estimated focusness decrease as time goes on, and alerts the user after a reasonable amount of time (between 30 minutes and 2 hours). Third, for our stretch goal, we can measure the performance of the model using the [Kaggle StayAlert challenge](https://www.kaggle.com/c/stayalert#description).
 - **Feasibility Evaluation**: We believe that it is a reasonable goal to implement an accurate and performant pulse tracker from vision signal in the time allotted. And we were lucky to have the Google Mobile Vision API which can be very useful for getting useful signals.
 
 ### Schedule
@@ -50,3 +50,14 @@ working CNN model.
 - **Week 3** Implement basic app logic and UI. Take a 5-second clip every 5 minutes, and analyze the pulse signal from that. And implement a detector that takes as input all past pulse signals and outputs an estimated focusness number.
 - **Week 4** Realize the stretch goal. Evaluate our final product. Do demos and presentations.
 
+### Checkpoint (Updated on April 8, 2017)
+
+Up to this date, we have completed the following:
+- **Real-time Face Tracking** with Google Mobile Vision API
+- **Armadillo-based FastICA Implementation**
+[[https://github.com/pavelkang/FocusTracker/blob/master/ica_compare.png|alt=ica_result_comparison]]
+- **Real-time Pulse Detection**
+
+#### Progress Evaluation
+#### What do we plan to show
+#### preliminary results
