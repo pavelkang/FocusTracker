@@ -65,7 +65,7 @@ https://github.com/pavelkang/FocusTracker/blob/master/ica_compare.png|alt=ica_re
 
 Here are some preliminary results. 
 
-![](/blog/api/uploads/1491752796_Screen_Shot_2017-04-09_at_11.46.04_AM.png)
+![](http://tedli.me/blog/api/uploads/1491752796_Screen_Shot_2017-04-09_at_11.46.04_AM.png)
 
 The above figure plots the frequency magnitude ($$y$$-axis) v/s frequency values ($$x$$-axis) of a sample video clip of a person after FFT is applied. The $$x$$ axis is offset by 23 Hz. (The 0 $$x$$ value corresponds to 23 Hz.) We note that the highest frequency occurs when $$x = 11$$ (34 Hertz). Given that this video was taken at 30 fps, the heart rate of the person is [].
 
