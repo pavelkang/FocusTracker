@@ -54,7 +54,9 @@ working CNN model.
 
 Up to this date, we have completed the following:
 - **Real-time Face Tracking** with Google Mobile Vision API
+![](https://github.com/pavelkang/FocusTracker/blob/master/screenshot.PNG)
 - **Armadillo-based FastICA Implementation**
+We re-implemented FastICA using Armadillo, and the performance is __almost 2 times__ of the state-of-the-art implementation, and the code is available in our Github repository!
 ![](https://github.com/pavelkang/FocusTracker/blob/master/ica_compare.png)
 - **Real-time Pulse Detection**: For now, our implementation works as follows:
 
@@ -63,12 +65,20 @@ Up to this date, we have completed the following:
     - Feed the resulting matrix into FastICA for independent component analysis
     - Use FFT to extract the frequency with the highest magnitude. The highest frequency roughly corresponds to the heart pulse of the target individual.
 
+#### preliminary results
 Here are some preliminary results.
 
+![](https://github.com/pavelkang/FocusTracker/blob/master/windowed.png)
 ![](http://tedli.me/blog/api/uploads/1491752796_Screen_Shot_2017-04-09_at_11.46.04_AM.png)
 
 The above figure plots the frequency magnitude ($$y$$-axis) v/s frequency values ($$x$$-axis) of a sample video clip of a person after FFT is applied. The $$x$$ axis is offset by 23 Hz. (The 0 $$x$$ value corresponds to 23 Hz.) We note that the highest frequency occurs when $$x = 11$$ (34 Hertz). Given that this video was taken at 30 fps, the heart rate of the person is [].
 
 #### Progress Evaluation
+
+We are very happy with our result. We are already able to get pretty good result!
+
+For the next part, we want to detect gaze position using neural network!
+
 #### What do we plan to show
-#### preliminary results
+
+A video showing our app in action, with real-time pulse detection and gaze detection(not real-time)
