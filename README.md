@@ -54,7 +54,7 @@ working CNN model.
 
 Up to this date, we have completed the following:
 - **Real-time Face Tracking** with Google Mobile Vision API
-![](http://i.imgur.com/a/qUkDt.png)
+![](http://i.imgur.com/Pfy2mXS.png)
 - **Armadillo-based FastICA Implementation**
 We re-implemented FastICA using Armadillo, and the performance is __almost 2 times__ of the state-of-the-art implementation, and the code is available in our Github repository!
 ![](http://i.imgur.com/lsyGDkp.png)
