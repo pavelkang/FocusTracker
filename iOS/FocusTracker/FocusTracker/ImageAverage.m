@@ -25,6 +25,7 @@
             *bp += data[pixelInfo + 2];
         }
     }
+    //TODO this can be optimized
     *rp /= image.size.height * image.size.width;
     *gp /= image.size.height * image.size.width;
     *bp /= image.size.height * image.size.width;

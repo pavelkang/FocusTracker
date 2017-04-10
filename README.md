@@ -55,7 +55,7 @@ working CNN model.
 Up to this date, we have completed the following:
 - **Real-time Face Tracking** with Google Mobile Vision API
 - **Armadillo-based FastICA Implementation**
-https://github.com/pavelkang/FocusTracker/blob/master/ica_compare.png|alt=ica_result_comparison
+![](https://github.com/pavelkang/FocusTracker/blob/master/ica_compare.png)
 - **Real-time Pulse Detection**: For now, our implementation works as follows:
 
     - Track and segment the facial area
@@ -63,7 +63,7 @@ https://github.com/pavelkang/FocusTracker/blob/master/ica_compare.png|alt=ica_re
     - Feed the resulting matrix into FastICA for independent component analysis
     - Use FFT to extract the frequency with the highest magnitude. The highest frequency roughly corresponds to the heart pulse of the target individual.
 
-Here are some preliminary results. 
+Here are some preliminary results.
 
 ![](http://tedli.me/blog/api/uploads/1491752796_Screen_Shot_2017-04-09_at_11.46.04_AM.png)
 

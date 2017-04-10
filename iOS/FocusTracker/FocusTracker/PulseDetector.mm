@@ -12,10 +12,13 @@
 #include <cstdlib>
 #include "ica.h"
 #include "DataBuffer.hpp"
+#include <math.h>
 using namespace std;
 #endif
 
 @implementation PulseDetector
+
+#define FFT_SIZE 1024
 
 // 0.75 to 4 Hz
 int UPPER_BOUND = 120; //4 / (1.0 / 30.0);
@@ -27,8 +30,24 @@ int LOWER_BOUND = 23; //0.75 / (1.0 / 30.0);
         return -1;
     }
     arma::mat RGBdata = db->getData();
+    //cout << "RGB" << endl;
     //cout << RGBdata << endl;
-    assert(RGBdata.n_rows == 3);
+    
+    // whitening
+    // TODO optimize this
+    arma::vec means(3), stddevs(3);
+    
+    for (int i = 0; i < 3; i++) {
+        means(i) = arma::mean(RGBdata.row(i));
+        stddevs(i) = arma::stddev(RGBdata.row(i));
+    }
+    
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < FFT_SIZE; j++) {
+            RGBdata(i, j) = (RGBdata(i,j) - means(i)) / stddevs(i);
+        }
+    }
+
 
     // ICA Decomposition
     Fast_ICA ica(RGBdata);
@@ -40,14 +59,29 @@ int LOWER_BOUND = 23; //0.75 / (1.0 / 30.0);
     // FFT
     // window? hamming?
     arma::mat ICs = ica.get_independent_components();
+    //cout << "ICs" << endl;
+    //cout << ICs << endl;
+    
+    
+    // Hamming window:
+    //TODO: we can improve the performance by pre-computing this
+    
+    arma::vec hamming_window(FFT_SIZE);
+    for (int i = 0; i < FFT_SIZE; i++) {
+        hamming_window(i) = 0.54 - 0.46 * cos(2*M_PI*i / (FFT_SIZE - i));
+    }
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < FFT_SIZE; j++) {
+            ICs(i, j) *= hamming_window(j);
+        }
+    }
     arma::mat transICs = arma::trans(ICs);
+    //cout << "windowed ICs" << endl;
+    //cout << ICs << endl;
     
-    
-    arma::mat Gdata = RGBdata.submat(1, 0, 1, RGBdata.n_cols-1);
-    
-    
-    arma::mat transGdata = arma::trans(Gdata);
-    arma::cx_mat src_g = arma::fft(transGdata);
+    //arma::mat Gdata = RGBdata.submat(1, 0, 1, RGBdata.n_cols-1);
+    //arma::mat transGdata = arma::trans(Gdata);
+    //arma::cx_mat src_g = arma::fft(transGdata);
     
     arma::cx_mat sources = arma::fft(transICs);
     
@@ -56,20 +90,27 @@ int LOWER_BOUND = 23; //0.75 / (1.0 / 30.0);
     // Find peak
     // we take the magnitudes of the complex numbers. IMPROVE THIS. http://blog.bjornroche.com/2012/07/frequency-detection-using-fft-aka-pitch.html
     arma::mat sources_real = abs(sources);
-    arma::mat gdata_real = abs(src_g);
-    arma::vec peaks(3);
+    //arma::mat gdata_real = abs(src_g);
     
-    cout << gdata_real << endl;
+    //cout << gdata_real << endl;
     
     for (int i = 0; i < 3; i++) {
         cout << "component " << (i+1) << endl;
         arma::vec comp = arma::conv_to<arma::vec>::from(sources_real.col(i));
-        //cout << comp << endl;
         
-//        arma::uvec indices = sort_index(comp);
-//        for (int i = indices.n_elem-1; i >=indices.n_elem-4; i--) {
-//            cout << "bin number: " << indices[i] << ", bpm: " << indices[i] * 60 << endl;
-//        }
+        //TODO calculate FPS
+        
+        double fps = 23.0;
+        int lower = ceil((45/60.0)/(fps/FFT_SIZE));
+        int upper = ceil((240/60.0)/(fps/FFT_SIZE));
+        cout << lower << " - " << upper << endl;
+        arma::vec validcomp = comp.subvec(lower, upper);
+        
+        arma::uvec indices = arma::sort_index(validcomp);
+        for (int i = indices.n_elem - 1; i >= indices.n_elem - 5; i--) {
+            arma::uword index = indices[i];
+            cout << "(" << index << ", " << 60*(index+lower)*(fps/FFT_SIZE) << ")" << endl;
+        }
     }
 
     //std::cout << peaks << std::endl;

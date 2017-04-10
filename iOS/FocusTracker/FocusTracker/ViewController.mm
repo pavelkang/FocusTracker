@@ -17,11 +17,16 @@
 
 #ifdef __cplusplus
 #include "DataBuffer.hpp"
+#include <opencv2/opencv.hpp>
+#include <iostream>
+#include <ctime>
 #endif
 
 @interface ViewController ()<AVCaptureVideoDataOutputSampleBufferDelegate> {
     DataBuffer *_buffer;
     int count;
+    int64 curr_time_;
+    std::clock_t prev;
 }
 
 @property (nonatomic, strong) UIView *placeHolder;
@@ -237,6 +242,12 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
             if (count % 50 == 49) {
                 [PulseDetector getPulse:_buffer];
             }
+            
+            
+            int64 next_time = cv::getTickCount();
+            float fps = (float) cv::getTickFrequency() / (next_time - curr_time_);
+            curr_time_ = next_time;
+            //std::cout << "fps: " << fps << std::endl;
         }
     });
 }
