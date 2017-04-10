@@ -55,7 +55,7 @@ working CNN model.
 Up to this date, we have completed the following:
 - **Real-time Face Tracking** with Google Mobile Vision API
 - **Armadillo-based FastICA Implementation**
-![](https://github.com/pavelkang/FocusTracker/blob/master/ica_compare.png)
+![](https://raw.github.com/pavelkang/FocusTracker/blob/master/ica_compare.png)
 - **Real-time Pulse Detection**: For now, our implementation works as follows:
 
     - Track and segment the facial area
