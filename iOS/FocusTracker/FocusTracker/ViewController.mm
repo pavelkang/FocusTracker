@@ -8,6 +8,7 @@
 
 #import <AVFoundation/AVFoundation.h>
 #import <GoogleMobileVision/GoogleMobileVision.h>
+#import <QuartzCore/QuartzCore.h>
 
 #import "ViewController.h"
 #import "DrawingUtility.h"
@@ -27,6 +28,7 @@
     int count;
     int64 curr_time_;
     std::clock_t prev;
+    int _pulse;
 }
 
 @property (nonatomic, strong) UIView *placeHolder;
@@ -45,6 +47,7 @@
 @end
 
 @implementation ViewController
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -240,14 +243,13 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
          
             count += 1;
             if (count % 50 == 49) {
-                [PulseDetector getPulse:_buffer];
+                _pulse = [PulseDetector getPulse:_buffer];
             }
             
+            NSString *pulseStr = [NSString stringWithFormat:@"%d", _pulse];
+            CGRect resultRect = CGRectMake(10, 10, 50, 20);
+            [DrawingUtility addTextLabel:pulseStr atRect:resultRect toView:self.overlayView withColor:UIColor.blueColor];
             
-            int64 next_time = cv::getTickCount();
-            float fps = (float) cv::getTickFrequency() / (next_time - curr_time_);
-            curr_time_ = next_time;
-            //std::cout << "fps: " << fps << std::endl;
         }
     });
 }

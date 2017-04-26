@@ -13,6 +13,8 @@ DataBuffer::DataBuffer(int maxLength) {
     _mat = arma::mat(3, _maxLength);
     _current = 0;
     _size = 0;
+    _timestamps.reserve(maxLength);
+    mach_timebase_info(&_info);
 }
 
 bool DataBuffer::hasData() {
@@ -26,6 +28,7 @@ void DataBuffer::pushData(double r, double g, double b) {
     if (_size < _maxLength) {
         ++_size;
     }
+    _timestamps[_current] = mach_absolute_time();
     _current = (_current + 1) % _maxLength;
 }
 
@@ -34,4 +37,11 @@ arma::mat DataBuffer::getData() {
     data(arma::span::all, arma::span(0, _maxLength - _current - 1)) = _mat(arma::span::all, arma::span(_current, _maxLength - 1));
     data(arma::span::all, arma::span(_maxLength - _current, _maxLength - 1)) = _mat(arma::span::all, arma::span(0, _current - 1));
     return data;
+}
+
+uint64_t DataBuffer::getTimeElapsed() {
+    uint64_t start_time = _timestamps[_current];
+    uint64_t current_time = _timestamps[(_current - 1) % _maxLength];
+    uint64_t timeElapsed = (current_time - start_time) * _info.numer / _info.denom;
+    return timeElapsed;
 }

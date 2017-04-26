@@ -30,9 +30,10 @@ int LOWER_BOUND = 23; //0.75 / (1.0 / 30.0);
         return -1;
     }
     arma::mat RGBdata = db->getData();
-    //cout << "RGB" << endl;
-    //cout << RGBdata << endl;
-    
+    uint64_t timePassed = db->getTimeElapsed();
+    cout << "Time passed: " << timePassed << endl;
+    cout << "FPS: " << FFT_SIZE / (timePassed / 1000000000.0) << endl;
+    double fps = FFT_SIZE / (timePassed / 1000000000.0);
     // whitening
     // TODO optimize this
     arma::vec means(3), stddevs(3);
@@ -52,16 +53,12 @@ int LOWER_BOUND = 23; //0.75 / (1.0 / 30.0);
     // ICA Decomposition
     Fast_ICA ica(RGBdata);
     ica.set_nrof_independent_components(3);
-    ica.set_non_linearity(FICA_NONLIN_TANH);
+    ica.set_non_linearity( FICA_NONLIN_TANH );
     ica.set_approach( FICA_APPROACH_DEFL );
     ica.separate();
     
     // FFT
-    // window? hamming?
     arma::mat ICs = ica.get_independent_components();
-    //cout << "ICs" << endl;
-    //cout << ICs << endl;
-    
     
     // Hamming window:
     //TODO: we can improve the performance by pre-computing this
@@ -90,32 +87,23 @@ int LOWER_BOUND = 23; //0.75 / (1.0 / 30.0);
     // Find peak
     // we take the magnitudes of the complex numbers. IMPROVE THIS. http://blog.bjornroche.com/2012/07/frequency-detection-using-fft-aka-pitch.html
     arma::mat sources_real = abs(sources);
-    //arma::mat gdata_real = abs(src_g);
     
-    //cout << gdata_real << endl;
-    
-    for (int i = 0; i < 3; i++) {
-        cout << "component " << (i+1) << endl;
-        arma::vec comp = arma::conv_to<arma::vec>::from(sources_real.col(i));
+    arma::vec comp = arma::conv_to<arma::vec>::from(sources_real.col(1));
+    //TODO calculate FPS
         
-        //TODO calculate FPS
+    int lower = ceil((50/60.0)/(fps/FFT_SIZE));
+    int upper = ceil((200/60.0)/(fps/FFT_SIZE));
+    arma::vec validcomp = comp.subvec(lower, upper);
         
-        double fps = 23.0;
-        int lower = ceil((45/60.0)/(fps/FFT_SIZE));
-        int upper = ceil((240/60.0)/(fps/FFT_SIZE));
-        cout << lower << " - " << upper << endl;
-        arma::vec validcomp = comp.subvec(lower, upper);
-        
-        arma::uvec indices = arma::sort_index(validcomp);
-        for (int i = indices.n_elem - 1; i >= indices.n_elem - 5; i--) {
-            arma::uword index = indices[i];
-            cout << "(" << index << ", " << 60*(index+lower)*(fps/FFT_SIZE) << ")" << endl;
-        }
+    arma::uvec indices = arma::sort_index(validcomp);
+    unsigned long index = indices[indices.n_elem - 1];
+    cout << "--------" << endl;
+    for (int i = indices.n_elem - 1; i >= indices.n_elem - 10; i--) {
+        cout << (indices[i] + lower) * (fps / FFT_SIZE) * 60 << endl;
     }
-
-    //std::cout << peaks << std::endl;
-    
-    return -1;
+    cout << "--------" << endl;
+    unsigned long pulse = (index + lower) * (fps / FFT_SIZE) * 60;
+    return pulse;
 }
 
 ////-------------------------------------------------------------------

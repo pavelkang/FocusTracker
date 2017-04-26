@@ -8,6 +8,7 @@
 #include <iostream>
 #include <ctime>
 
+
 using namespace std;
 using namespace arma;
 
@@ -555,36 +556,43 @@ int main()
   //   }
   //   X << endr;
   // }
-  X.load("../arma_in");
+  // X.load("../arma_in");
   //X = trans(X);
-  cout << size(X) << endl;
 
-  vec means(3), stddevs(3);
+  // vec means(3), stddevs(3);
 
-  for (int i = 0; i < 3; i++) {
-    means(i) = mean(X.row(i));
-    stddevs(i) = stddev(X.row(i));
-  }
+  // for (int i = 0; i < 3; i++) {
+  //   means(i) = mean(X.row(i));
+  //   stddevs(i) = stddev(X.row(i));
+  // }
 
-  for (int i = 0; i < 3; i++) {
-    for (int j = 0; j < 1024; j++) {
-      X(i, j) = (X(i,j) - means(i)) / stddevs(i);
+  // whitening
+  // for (int i = 0; i < 3; i++) {
+  //   for (int j = 0; j < 1024; j++) {
+  //     X(i, j) = (X(i,j) - means(i)) / stddevs(i);
+  //   }
+  // }
+
+  string dims[6] = {"100", "500", "1000", "2000", "3000", "5000"};
+
+  for (int i = 0; i < 6; i++) {
+    int trials = 5000;
+    mat m_arma;
+    string filename = "arma-" + dims[i] + ".mat";
+    m_arma.load(filename);
+    m_arma = trans(m_arma);
+    cout << size(m_arma) << endl;
+    std::clock_t start = std::clock();
+    while (trials--) {
+      Fast_ICA ica(X);
+      ica.set_nrof_independent_components(3);
+      ica.set_non_linearity(FICA_NONLIN_TANH);
+      ica.set_approach( FICA_APPROACH_DEFL );
+      ica.separate();
+      mat ICs = ica.get_independent_components();
     }
+    cout << (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000) << " ms" << endl;
   }
-
-  std::clock_t    start;
-  start = std::clock();
-  int trials = 1;
-  while (trials--) {
-    Fast_ICA ica(X);
-    ica.set_nrof_independent_components(3);
-    ica.set_non_linearity(FICA_NONLIN_TANH);
-    ica.set_approach( FICA_APPROACH_DEFL );
-    ica.separate();
-    mat ICs = ica.get_independent_components();
-    cout << ICs << endl;
-  }
-  std::cout << "Time: " << (std::clock() - start) / (double)(CLOCKS_PER_SEC / 1000) << " ms" << std::endl;
 
   return 0;
 }
