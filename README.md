@@ -54,10 +54,10 @@ working CNN model.
 
 Up to this date, we have completed the following:
 - **Real-time Face Tracking** with Google Mobile Vision API
-![](http://imgur.com/a/qUkDt)
+![](http://i.imgur.com/Pfy2mXS.png)
 - **Armadillo-based FastICA Implementation**
 We re-implemented FastICA using Armadillo, and the performance is __almost 2 times__ of the state-of-the-art implementation, and the code is available in our Github repository!
-![](http://imgur.com/lsyGDkp)
+![](http://i.imgur.com/lsyGDkp.png)
 - **Real-time Pulse Detection**: For now, our implementation works as follows:
 
     - Track and segment the facial area
@@ -68,7 +68,7 @@ We re-implemented FastICA using Armadillo, and the performance is __almost 2 tim
 #### preliminary results
 Here are some preliminary results.
 
-![](http://imgur.com/K2qjmZO)
+![](http://i.imgur.com/K2qjmZO.png)
 ![](http://tedli.me/blog/api/uploads/1491752796_Screen_Shot_2017-04-09_at_11.46.04_AM.png)
 
 The above figure plots the frequency magnitude ($$y$$-axis) v/s frequency values ($$x$$-axis) of a sample video clip of a person after FFT is applied. The $$x$$ axis is offset by 23 Hz. (The 0 $$x$$ value corresponds to 23 Hz.) We note that the highest frequency occurs when $$x = 11$$ (34 Hertz). Given that this video was taken at 30 fps, the heart rate of the person is [].
