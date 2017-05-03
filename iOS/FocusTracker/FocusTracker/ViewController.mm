@@ -14,6 +14,7 @@
 #import "UIImage+Crop.h"
 #import "ImageAverage.h"
 #import "PulseDetector.h"
+#import "BEMSimpleLineGraphView.h"
 
 #ifdef __cplusplus
 #include "DataBuffer.hpp"
@@ -29,7 +30,7 @@
 #define PADDING 10
 #define INT_LEN 29
 
-@interface ViewController ()<AVCaptureVideoDataOutputSampleBufferDelegate> {
+@interface ViewController ()<AVCaptureVideoDataOutputSampleBufferDelegate, BEMSimpleLineGraphDataSource> {
     DataBuffer *_buffer;
     int count;
     int64 curr_time_;
@@ -42,6 +43,8 @@
 
 @property (nonatomic, strong) UIView *placeHolder;
 @property (nonatomic, strong) UIView *overlayView;
+@property (nonatomic, strong) UILabel *heartPulseLabel;
+@property (nonatomic, strong) BEMSimpleLineGraphView *heartPulseGraph;
 
 // Video objects.
 @property(nonatomic, strong) AVCaptureSession *session;
@@ -77,9 +80,49 @@ cv::Point2f pulse2Point(double index, double pulse) {
 
     self.placeHolder = [[UIView alloc] initWithFrame:self.view.frame];
     self.overlayView = [[UIView alloc] initWithFrame:self.view.frame];
+    CGRect bounds = [[UIScreen mainScreen] bounds];
+    float screenWidth = bounds.size.width;
+    float screenHeight = bounds.size.height;
+    self.heartPulseGraph = [[BEMSimpleLineGraphView alloc] initWithFrame:CGRectMake(0, screenHeight - 250.0, screenWidth, 250.0)];
+    self.heartPulseGraph.dataSource = self;
     
+    CGColorSpaceRef colorspace = CGColorSpaceCreateDeviceRGB();
+    size_t num_locations = 2;
+    CGFloat locations[2] = { 0.0, 1.0 };
+    CGFloat components[8] = {
+        1.0, 0.0, 0.0, 1.0,
+        1.0, 0.0, 0.0, 0.0
+    };
+    
+    // Apply the gradient to the bottom portion of the graph
+    self.heartPulseGraph.gradientBottom = CGGradientCreateWithColorComponents(colorspace, components, locations, num_locations);
+    self.heartPulseGraph.enableTouchReport = NO;
+    self.heartPulseGraph.enablePopUpReport = NO;
+    self.heartPulseGraph.enableYAxisLabel = NO;
+    self.heartPulseGraph.autoScaleYAxis = YES;
+    self.heartPulseGraph.alwaysDisplayDots = NO;
+    self.heartPulseGraph.enableReferenceXAxisLines = NO;
+    self.heartPulseGraph.enableReferenceYAxisLines = NO;
+    self.heartPulseGraph.enableReferenceAxisFrame = NO;
+    
+    self.heartPulseGraph.animationGraphStyle = BEMLineAnimationFade;
+    self.heartPulseGraph.enableBezierCurve = YES;
+    
+    UIColor *color = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.0];
+    
+    self.heartPulseGraph.colorTop = color;
+    self.heartPulseGraph.colorBottom = color;
+    self.heartPulseGraph.backgroundColor = color;
+    
+    self.heartPulseLabel = [[UILabel alloc] initWithFrame:CGRectMake(screenWidth / 2.0 - 50.0, 100.0, 100.0, 50.0)];
+    self.heartPulseLabel.font = [UIFont systemFontOfSize:60];
+    self.heartPulseLabel.text = @"";
+    self.heartPulseLabel.textColor = [UIColor colorWithRed:1.0 green:0.0 blue:0.0 alpha:0.8];
+    self.heartPulseLabel.textAlignment = NSTextAlignmentCenter;
     [self.view addSubview:self.placeHolder];
     [self.view addSubview:self.overlayView];
+    [self.view addSubview:self.heartPulseLabel];
+    [self.view addSubview:self.heartPulseGraph];
 
     self.videoDataOutputQueue = dispatch_queue_create("VideoDataOutputQueue", DISPATCH_QUEUE_SERIAL);
     self.session = [[AVCaptureSession alloc] init];
@@ -105,7 +148,7 @@ cv::Point2f pulse2Point(double index, double pulse) {
         _hamming_window(i) = 0.54 - 0.46 * cos(2*M_PI*i / (FFT_SIZE - i));
     }
     
-    _pulses.reserve(HISTORY_LEN);
+    _pulses.assign(HISTORY_LEN, 0);
     _curr = 0;
 }
 
@@ -250,7 +293,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
                                         offset:videoBox.origin];
             [DrawingUtility addRectangle:faceRect
                                   toView:self.overlayView
-                               withColor:[UIColor redColor]];
+                               withColor:[UIColor whiteColor]];
 
             // Tracking Id.
             if (face.hasTrackingID) {
@@ -259,7 +302,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
                                            yScale:yScale
                                            offset:videoBox.origin];
                 UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(point.x, point.y, 100, 20)];
-                label.text = [NSString stringWithFormat:@"id: %lu", (unsigned long)face.trackingID];
+//                label.text = [NSString stringWithFormat:@"id: %lu", (unsigned long)face.trackingID];
                 [self.overlayView addSubview:label];
             }
 
@@ -306,46 +349,67 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
                 
             }
             
-            NSString *pulseStr = [NSString stringWithFormat:@"%f", _pulse];
-            CGRect resultRect = CGRectMake(500, 500, 50, 20);
-            [DrawingUtility addTextLabel:pulseStr atRect:resultRect toView:self.overlayView withColor:UIColor.blueColor];
+            int pulse = (int) floor(_pulse);
+            if (pulse != -1) {
+                NSString *pulseStr = [NSString stringWithFormat:@"%d", (int) floor(_pulse)];
+                self.heartPulseLabel.text = pulseStr;
+                [self.heartPulseGraph reloadGraph];
+            } else {
+                self.heartPulseLabel.text = @"";
+            }
             
+//            NSString *pulseStr = [NSString stringWithFormat:@"%f", _pulse];
+//            CGRect resultRect = CGRectMake(500, 500, 50, 20);
+//            [DrawingUtility addTextLabel:pulseStr atRect:resultRect toView:self.overlayView withColor:UIColor.blueColor];
+//            
             // Draw the line graph
             
-            cv::Mat mat = cv::Mat(WIN_HEIGHT,WIN_WIDTH, CV_8UC4, cv::Scalar(0,0,0,0));
+//            cv::Mat mat = cv::Mat(WIN_HEIGHT,WIN_WIDTH, CV_8UC4, cv::Scalar(0,0,0,0));
+//            
+//            // Draw horizontal lines:
+//            
+//            for (int y = 10; y <= WIN_HEIGHT - 10; y+=10) {
+//                std::vector<cv::Point2f> line(2);
+//                line.push_back(cv::Point2f( 0 , y ));
+//                line.push_back(cv::Point2f( WIN_WIDTH, y));
+//                DrawLines(mat, line, DARKGREEN);
+//            }
+//            
+//            // Draw vertical lines:
+//            
+//            for (int x = 10; x <= WIN_WIDTH - 10; x+=10) {
+//                std::vector<cv::Point2f> line(2);
+//                line.push_back(cv::Point2f(x, 0));
+//                line.push_back(cv::Point2f(x, WIN_HEIGHT));
+//                DrawLines(mat, line, DARKGREEN);
+//            }
+//            
+//            // Draw the line graph
+//
+//            std::vector<cv::Point2f> cv_pts(HISTORY_LEN);
+//            for (int i = 0; i < HISTORY_LEN; i++) {
+//                cv_pts[i] = pulse2Point(i, _pulses[(_curr+i) % HISTORY_LEN]);
+//            }
+//            DrawLines(mat, cv_pts, GREEN);
+//            DrawPts(mat, cv_pts, GREEN);
+//            
+//            UIImageView *imageView_ = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, WIN_WIDTH, WIN_HEIGHT)];
+//            [self.view addSubview:imageView_];
+//            imageView_.image = [self UIImageFromCVMat:mat];
+        
             
-            // Draw horizontal lines:
-            
-            for (int y = 10; y <= WIN_HEIGHT - 10; y+=10) {
-                std::vector<cv::Point2f> line(2);
-                line.push_back(cv::Point2f( 0 , y ));
-                line.push_back(cv::Point2f( WIN_WIDTH, y));
-                DrawLines(mat, line, DARKGREEN);
-            }
-            
-            // Draw vertical lines:
-            
-            for (int x = 10; x <= WIN_WIDTH - 10; x+=10) {
-                std::vector<cv::Point2f> line(2);
-                line.push_back(cv::Point2f(x, 0));
-                line.push_back(cv::Point2f(x, WIN_HEIGHT));
-                DrawLines(mat, line, DARKGREEN);
-            }
-            
-            // Draw the line graph
-
-            std::vector<cv::Point2f> cv_pts(HISTORY_LEN);
-            for (int i = 0; i < HISTORY_LEN; i++) {
-                cv_pts[i] = pulse2Point(i, _pulses[(_curr+i) % HISTORY_LEN]);
-            }
-            DrawLines(mat, cv_pts, GREEN);
-            DrawPts(mat, cv_pts, GREEN);
-            
-            UIImageView *imageView_ = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, WIN_WIDTH, WIN_HEIGHT)];
-            [self.view addSubview:imageView_];
-            imageView_.image = [self UIImageFromCVMat:mat];
         }
     });
+}
+
+#pragma mark - SimpleLineGraph Data Source
+
+- (NSInteger)numberOfPointsInLineGraph:(BEMSimpleLineGraphView *)graph {
+    return (int) fmin(HISTORY_LEN, _pulses.size());
+}
+
+- (CGFloat)lineGraph:(BEMSimpleLineGraphView *)graph valueForPointAtIndex:(NSInteger)index {
+    return _pulses[(_curr + index) % HISTORY_LEN];
 }
 
 #pragma mark - Camera setup
