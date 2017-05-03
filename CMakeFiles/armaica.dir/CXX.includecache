@@ -7,24 +7,8 @@
 #IncludeRegexTransform: 
 
 /Users/kai/FocusTracker/ica/armaica.cpp
-iostream
--
-armadillo
--
 armaica.hpp
 /Users/kai/FocusTracker/ica/armaica.hpp
-assert.h
--
-string
--
-fstream
--
-sstream
--
-iostream
--
-ctime
--
 
 /Users/kai/FocusTracker/ica/armaica.hpp
 armadillo

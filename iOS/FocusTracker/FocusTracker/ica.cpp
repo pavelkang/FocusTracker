@@ -38,8 +38,8 @@ Fast_ICA::Fast_ICA(mat ma_mixed_sig) {
   epsilon = 0.0001;
   sampleSize = 1.0;
   stabilization = false;
-  maxNumIterations = 100000;
-  maxFineTune = 100;
+  maxNumIterations = 10000;
+  maxFineTune = 10;
   firstEig = 1;
   mixedSig = ma_mixed_sig;
   lastEig = mixedSig.n_rows;

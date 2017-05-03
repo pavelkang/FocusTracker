@@ -1,13 +1,4 @@
-#include <iostream>
-#include <armadillo>
 #include "armaica.hpp"
-#include <assert.h>
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <iostream>
-#include <ctime>
-
 
 using namespace std;
 using namespace arma;
@@ -30,7 +21,6 @@ static bool fpica(const mat X, const mat whiteningMatrix,
 static uvec getSamples(const int max, const double percentage);
 
 vec elem_mult(vec a, vec b) {
-  assert(a.n_elem == b.n_elem);
   vec res;
   for (int i = 0; i < a.n_elem; i++) {
     res(i) = a(i) * b(i);
@@ -169,7 +159,7 @@ bool Fast_ICA::separate(void) {
   vec NcFirst; NcFirst.zeros(numOfIC);
   vec NcVp = D;
   for (int i = 0; i < NcFirst.n_elem; i++) {
-    NcFirst(i) = index_max(NcVp);
+    NcFirst(i) = arma::index_max(NcVp);
     NcVp(NcFirst(i)) = 0.0;
     VecPr.col(i) = dewhiteningMatrix.col(i);
   }
@@ -406,7 +396,7 @@ static bool fpica(const mat X, const mat whiteningMatrix,
           w = w - myy * (Gpow3 - Beta * w) / (3 - Beta);
           break;
         }
-        // TANH
+          // TANH
         case FICA_NONLIN_TANH : {
           vec hypTan = tanh(a1 * trans(X) * w);
           // TODO sum
@@ -438,7 +428,7 @@ static bool fpica(const mat X, const mat whiteningMatrix,
           break;
         }
 
-        // GAUSS
+          // GAUSS
         case FICA_NONLIN_GAUSS : {
           vec u = trans(X) * w;
           vec Usquared = pow(u, 2);
@@ -480,7 +470,7 @@ static bool fpica(const mat X, const mat whiteningMatrix,
           break;
         }
 
-        // SKEW
+          // SKEW
         case FICA_NONLIN_SKEW : {
           w = (X * (pow(trans(X) * w, 2))) / numSamples;
           break;
@@ -537,42 +527,10 @@ mat Fast_ICA::get_independent_components() { if (PCAonly) { mat x; return(x.zero
 void Fast_ICA::set_nrof_independent_components(int in_nrIC) { numOfIC = in_nrIC; }
 void Fast_ICA::set_non_linearity(int in_g) { g = in_g; }
 void Fast_ICA::set_approach(int in_approach) { approach = in_approach; if (approach == FICA_APPROACH_DEFL) finetune = true; }
+
+
 int main()
 {
-
-  mat X;
-
-  // std::ifstream file("../arma_in");
-  // std::string line;
-
-
-  // while(std::getline(file, line)) {
-  //   float value;
-  //   int cnt = 0;
-  //   std::stringstream  lineStream(line);
-  //   while (lineStream >> value) {
-  //     X << value;
-  //     cnt++;
-  //   }
-  //   X << endr;
-  // }
-  // X.load("../arma_in");
-  //X = trans(X);
-
-  // vec means(3), stddevs(3);
-
-  // for (int i = 0; i < 3; i++) {
-  //   means(i) = mean(X.row(i));
-  //   stddevs(i) = stddev(X.row(i));
-  // }
-
-  // whitening
-  // for (int i = 0; i < 3; i++) {
-  //   for (int j = 0; j < 1024; j++) {
-  //     X(i, j) = (X(i,j) - means(i)) / stddevs(i);
-  //   }
-  // }
-
   string dims[6] = {"100", "500", "1000", "2000", "3000", "5000"};
 
   for (int i = 0; i < 6; i++) {
@@ -580,11 +538,10 @@ int main()
     mat m_arma;
     string filename = "arma-" + dims[i] + ".mat";
     m_arma.load(filename);
-    m_arma = trans(m_arma);
     cout << size(m_arma) << endl;
     std::clock_t start = std::clock();
     while (trials--) {
-      Fast_ICA ica(X);
+      Fast_ICA ica(m_arma);
       ica.set_nrof_independent_components(3);
       ica.set_non_linearity(FICA_NONLIN_TANH);
       ica.set_approach( FICA_APPROACH_DEFL );

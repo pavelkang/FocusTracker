@@ -20,18 +20,12 @@ using namespace std;
 
 #define FFT_SIZE 1024
 
-// 0.75 to 4 Hz
-int UPPER_BOUND = 120; //4 / (1.0 / 30.0);
-int LOWER_BOUND = 23; //0.75 / (1.0 / 30.0);
-
-
-+ (int)getPulse:(DataBuffer *) db{
++ (double)getPulse:(DataBuffer *)db hamming_window:(arma::vec &)hamming_window prevPulse:(double)prevPulse {
     if (!db->hasData()) {
         return -1;
     }
     arma::mat RGBdata = db->getData();
     uint64_t timePassed = db->getTimeElapsed();
-    cout << "Time passed: " << timePassed << endl;
     cout << "FPS: " << FFT_SIZE / (timePassed / 1000000000.0) << endl;
     double fps = FFT_SIZE / (timePassed / 1000000000.0);
     // whitening
@@ -60,18 +54,12 @@ int LOWER_BOUND = 23; //0.75 / (1.0 / 30.0);
     // FFT
     arma::mat ICs = ica.get_independent_components();
     
-    // Hamming window:
-    //TODO: we can improve the performance by pre-computing this
-    
-    arma::vec hamming_window(FFT_SIZE);
-    for (int i = 0; i < FFT_SIZE; i++) {
-        hamming_window(i) = 0.54 - 0.46 * cos(2*M_PI*i / (FFT_SIZE - i));
-    }
+    /*
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < FFT_SIZE; j++) {
             ICs(i, j) *= hamming_window(j);
         }
-    }
+    }*/
     arma::mat transICs = arma::trans(ICs);
     //cout << "windowed ICs" << endl;
     //cout << ICs << endl;
@@ -81,8 +69,6 @@ int LOWER_BOUND = 23; //0.75 / (1.0 / 30.0);
     //arma::cx_mat src_g = arma::fft(transGdata);
     
     arma::cx_mat sources = arma::fft(transICs);
-    
-    //cout << ICs << endl;
     
     // Find peak
     // we take the magnitudes of the complex numbers. IMPROVE THIS. http://blog.bjornroche.com/2012/07/frequency-detection-using-fft-aka-pitch.html
@@ -97,13 +83,25 @@ int LOWER_BOUND = 23; //0.75 / (1.0 / 30.0);
         
     arma::uvec indices = arma::sort_index(validcomp);
     unsigned long index = indices[indices.n_elem - 1];
-    cout << "--------" << endl;
-    for (int i = indices.n_elem - 1; i >= indices.n_elem - 10; i--) {
-        cout << (indices[i] + lower) * (fps / FFT_SIZE) * 60 << endl;
+    
+    if (prevPulse >= 60 && prevPulse <= 100) {
+        for (int i = indices.n_elem - 1; i >= indices.n_elem - 10; i--) {
+            double pulse = (indices[i] + lower) * (fps / FFT_SIZE) * 60;
+            if (fabs(pulse - prevPulse) < 5) {
+                return pulse;
+            }
+        }
+        return prevPulse;
+    } else {
+        for (int i = indices.n_elem - 1; i >= indices.n_elem - 10; i--) {
+            double pulse = (indices[i] + lower) * (fps / FFT_SIZE) * 60;
+            if (pulse >= 60 && pulse <= 100) {
+                return pulse;
+            }
+        }
+        return -1;
     }
-    cout << "--------" << endl;
-    unsigned long pulse = (index + lower) * (fps / FFT_SIZE) * 60;
-    return pulse;
+    return -1;
 }
 
 ////-------------------------------------------------------------------

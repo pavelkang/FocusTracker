@@ -7,11 +7,12 @@
 //
 
 #import <Foundation/Foundation.h>
+#include "armadillo"
 
 class DataBuffer;
 
 @interface PulseDetector : NSObject
 
-+ (int)getPulse:(DataBuffer *) db;
++ (double)getPulse:(DataBuffer *)db hamming_window:(arma::vec &)hamming_window prevPulse:(double)prevPulse;
 
 @end

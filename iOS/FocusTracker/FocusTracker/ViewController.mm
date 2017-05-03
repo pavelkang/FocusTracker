@@ -8,7 +8,6 @@
 
 #import <AVFoundation/AVFoundation.h>
 #import <GoogleMobileVision/GoogleMobileVision.h>
-#import <QuartzCore/QuartzCore.h>
 
 #import "ViewController.h"
 #import "DrawingUtility.h"
@@ -23,12 +22,22 @@
 #include <ctime>
 #endif
 
+#define FFT_SIZE 1024
+#define HISTORY_LEN 10
+#define WIN_WIDTH 300
+#define WIN_HEIGHT 200
+#define PADDING 10
+#define INT_LEN 29
+
 @interface ViewController ()<AVCaptureVideoDataOutputSampleBufferDelegate> {
     DataBuffer *_buffer;
     int count;
     int64 curr_time_;
     std::clock_t prev;
-    int _pulse;
+    double _pulse;
+    arma::vec _hamming_window;
+    std::vector<double> _pulses;
+    int _curr;
 }
 
 @property (nonatomic, strong) UIView *placeHolder;
@@ -48,6 +57,17 @@
 
 @implementation ViewController
 
+const cv::Scalar GREEN = cv::Scalar(0,255,0,1);
+const cv::Scalar DARKGREEN = cv::Scalar(145, 191, 156, 1);
+
+cv::Point2f pulse2Point(double index, double pulse) {
+    double x = PADDING + index * INT_LEN;
+    double y = WIN_HEIGHT - 20;
+    if (pulse >= 60 && pulse <= 100) {
+        y = 180 + (60.0 - pulse) * 180 / 40;
+    }
+    return cv::Point2f(x, y);
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -79,6 +99,14 @@
                               GMVDetectorFaceLandmarkType : @(GMVDetectorFaceLandmarkNone)
                               };
     self.faceDetector = [GMVDetector detectorOfType:GMVDetectorTypeFace options:options];
+    
+    _hamming_window.zeros(FFT_SIZE);
+    for (int i = 0; i < FFT_SIZE; i++) {
+        _hamming_window(i) = 0.54 - 0.46 * cos(2*M_PI*i / (FFT_SIZE - i));
+    }
+    
+    _pulses.reserve(HISTORY_LEN);
+    _curr = 0;
 }
 
 
@@ -238,18 +266,84 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
             // Push to data buffer
             UIImage *croppedImage = [image crop:face.bounds];
             double r, g, b;
+            if (croppedImage == nil) {
+                assert(false);
+            }
             [ImageAverage averageOfImage:croppedImage r:&r g:&g b:&b];
             _buffer->pushData(r, g, b);
          
             count += 1;
             if (count % 50 == 49) {
-                _pulse = [PulseDetector getPulse:_buffer];
+                double prevPulse = _pulses[(_curr - 1) % HISTORY_LEN];
+                _pulse = [PulseDetector getPulse:_buffer hamming_window:_hamming_window prevPulse:prevPulse];
+                std::cout << _pulse << std::endl;
+                _pulses[_curr % HISTORY_LEN] = _pulse;
+                _curr = (_curr + 1) % HISTORY_LEN;
             }
             
-            NSString *pulseStr = [NSString stringWithFormat:@"%d", _pulse];
-            CGRect resultRect = CGRectMake(10, 10, 50, 20);
+            if (count % 100 == 99) {
+                NSMutableArray<UIImage *> *eyeRegions = [NSMutableArray array];
+            
+                float eyeWidth = faceRect.size.width * 0.28;
+                float eyeHeight = faceRect.size.height * 0.20;
+                if (face.hasLeftEyePosition) {
+                    CGPoint leftEyePos = face.leftEyePosition;
+                    CGRect leftEyeRect = CGRectMake(leftEyePos.x - eyeWidth / 2.0, leftEyePos.y - eyeHeight / 2.0, eyeWidth, eyeHeight);
+                    UIImage *leftEye = [image crop:leftEyeRect];
+                    [eyeRegions addObject:leftEye];
+                }
+            
+                if (face.hasRightEyePosition) {
+                    CGPoint rightEyePos = face.rightEyePosition;
+                    CGRect rightEyeRect = CGRectMake(rightEyePos.x - eyeWidth / 2.0, rightEyePos.y - eyeHeight / 2.0, eyeWidth, eyeHeight);
+                    UIImage *rightEye = [image crop:rightEyeRect];
+                    [eyeRegions addObject:rightEye];
+                }
+                
+                std::cout << "Hi" << std::endl;
+                
+                // Apply Neural Network here
+                
+            }
+            
+            NSString *pulseStr = [NSString stringWithFormat:@"%f", _pulse];
+            CGRect resultRect = CGRectMake(500, 500, 50, 20);
             [DrawingUtility addTextLabel:pulseStr atRect:resultRect toView:self.overlayView withColor:UIColor.blueColor];
             
+            // Draw the line graph
+            
+            cv::Mat mat = cv::Mat(WIN_HEIGHT,WIN_WIDTH, CV_8UC4, cv::Scalar(0,0,0,0));
+            
+            // Draw horizontal lines:
+            
+            for (int y = 10; y <= WIN_HEIGHT - 10; y+=10) {
+                std::vector<cv::Point2f> line(2);
+                line.push_back(cv::Point2f( 0 , y ));
+                line.push_back(cv::Point2f( WIN_WIDTH, y));
+                DrawLines(mat, line, DARKGREEN);
+            }
+            
+            // Draw vertical lines:
+            
+            for (int x = 10; x <= WIN_WIDTH - 10; x+=10) {
+                std::vector<cv::Point2f> line(2);
+                line.push_back(cv::Point2f(x, 0));
+                line.push_back(cv::Point2f(x, WIN_HEIGHT));
+                DrawLines(mat, line, DARKGREEN);
+            }
+            
+            // Draw the line graph
+
+            std::vector<cv::Point2f> cv_pts(HISTORY_LEN);
+            for (int i = 0; i < HISTORY_LEN; i++) {
+                cv_pts[i] = pulse2Point(i, _pulses[(_curr+i) % HISTORY_LEN]);
+            }
+            DrawLines(mat, cv_pts, GREEN);
+            DrawPts(mat, cv_pts, GREEN);
+            
+            UIImageView *imageView_ = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, WIN_WIDTH, WIN_HEIGHT)];
+            [self.view addSubview:imageView_];
+            imageView_.image = [self UIImageFromCVMat:mat];
         }
     });
 }
@@ -332,6 +426,57 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         }
     }
     return nil;
+}
+
+void DrawPts(cv::Mat &display_im, std::vector<cv::Point2f> cv_pts, const cv::Scalar &pts_clr)
+{
+    for(int i=0; i<cv_pts.size(); i++) {
+        cv::circle(display_im, cv_pts[i], 2, pts_clr, 2); // Draw the points
+    }
+}
+
+void DrawLines(cv::Mat &display_im, std::vector<cv::Point2f> &cv_pts, const cv::Scalar &pts_clr)
+{
+    for(int i=0; i<cv_pts.size()-1; i++) {
+        cv::line(display_im, cv_pts[i], cv_pts[i+1], pts_clr, 1); // Draw the line
+    }
+}
+
+-(UIImage *)UIImageFromCVMat:(cv::Mat)cvMat
+{
+    NSData *data = [NSData dataWithBytes:cvMat.data length:cvMat.elemSize()*cvMat.total()];
+    CGColorSpaceRef colorSpace;
+    
+    if (cvMat.elemSize() == 1) {
+        colorSpace = CGColorSpaceCreateDeviceGray();
+    } else {
+        colorSpace = CGColorSpaceCreateDeviceRGB();
+    }
+    
+    CGDataProviderRef provider = CGDataProviderCreateWithCFData((__bridge CFDataRef)data);
+    
+    // Creating CGImage from cv::Mat
+    CGImageRef imageRef = CGImageCreate(cvMat.cols,                                 //width
+                                        cvMat.rows,                                 //height
+                                        8,                                          //bits per component
+                                        8 * cvMat.elemSize(),                       //bits per pixel
+                                        cvMat.step[0],                            //bytesPerRow
+                                        colorSpace,                                 //colorspace
+                                        kCGImageAlphaNone|kCGBitmapByteOrderDefault,// bitmap info
+                                        provider,                                   //CGDataProviderRef
+                                        NULL,                                       //decode
+                                        false,                                      //should interpolate
+                                        kCGRenderingIntentDefault                   //intent
+                                        );
+    
+    
+    // Getting UIImage from CGImage
+    UIImage *finalImage = [UIImage imageWithCGImage:imageRef];
+    CGImageRelease(imageRef);
+    CGDataProviderRelease(provider);
+    CGColorSpaceRelease(colorSpace);
+    
+    return finalImage;
 }
 
 @end
