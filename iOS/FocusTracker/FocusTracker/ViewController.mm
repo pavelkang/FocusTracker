@@ -24,7 +24,7 @@
 #endif
 
 #define FFT_SIZE 1024
-#define HISTORY_LEN 10
+#define HISTORY_LEN 18
 #define WIN_WIDTH 300
 #define WIN_HEIGHT 200
 #define PADDING 10
@@ -100,12 +100,13 @@ cv::Point2f pulse2Point(double index, double pulse) {
     self.heartPulseGraph.enablePopUpReport = NO;
     self.heartPulseGraph.enableYAxisLabel = NO;
     self.heartPulseGraph.autoScaleYAxis = YES;
-    self.heartPulseGraph.alwaysDisplayDots = NO;
+    self.heartPulseGraph.alwaysDisplayDots = YES;
     self.heartPulseGraph.enableReferenceXAxisLines = NO;
     self.heartPulseGraph.enableReferenceYAxisLines = NO;
     self.heartPulseGraph.enableReferenceAxisFrame = NO;
     
     self.heartPulseGraph.animationGraphStyle = BEMLineAnimationFade;
+    self.heartPulseGraph.animationGraphEntranceTime = 1.0;
     self.heartPulseGraph.enableBezierCurve = YES;
     
     UIColor *color = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.0];
