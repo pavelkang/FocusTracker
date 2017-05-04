@@ -21,6 +21,7 @@
 #include <opencv2/opencv.hpp>
 #include <iostream>
 #include <ctime>
+#include <opencv2/imgproc/imgproc.hpp>
 #endif
 
 #define FFT_SIZE 1024
@@ -138,9 +139,9 @@ cv::Point2f pulse2Point(double index, double pulse) {
 
     // Initialize the face detector.
     NSDictionary *options = @{
+                              GMVDetectorFaceLandmarkType : @(GMVDetectorFaceLandmarkAll),
                               GMVDetectorFaceMinSize : @(0.3),
-                              GMVDetectorFaceTrackingEnabled : @(YES),
-                              GMVDetectorFaceLandmarkType : @(GMVDetectorFaceLandmarkNone)
+                              GMVDetectorFaceTrackingEnabled : @(YES)
                               };
     self.faceDetector = [GMVDetector detectorOfType:GMVDetectorTypeFace options:options];
     
@@ -247,6 +248,15 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     NSDictionary *options = @{
                               GMVDetectorImageOrientation : @(orientation)
                               };
+    
+    if (image.imageOrientation != UIImageOrientationUp) {
+        UIGraphicsBeginImageContextWithOptions(image.size, NO, image.scale);
+        [image drawInRect:(CGRect){0, 0, image.size}];
+        UIImage *normalizedImage = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        image = normalizedImage;
+    }
+    
     // Detect features using GMVDetector.
     NSArray<GMVFaceFeature *> *faces = [self.faceDetector featuresInImage:image options:options];
 
@@ -311,7 +321,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
             UIImage *croppedImage = [image crop:face.bounds];
             double r, g, b;
             if (croppedImage == nil) {
-                assert(false);
+                continue;
             }
             [ImageAverage averageOfImage:croppedImage r:&r g:&g b:&b];
             _buffer->pushData(r, g, b);
@@ -328,25 +338,37 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
             if (count % 100 == 99) {
                 NSMutableArray<UIImage *> *eyeRegions = [NSMutableArray array];
             
-                float eyeWidth = faceRect.size.width * 0.28;
-                float eyeHeight = faceRect.size.height * 0.20;
+                float eyeWidth = faceRect.size.width * 0.21;
+                float eyeHeight = faceRect.size.height * 0.15;
+                
+                UIImage *leftEye;
+                UIImage *rightEye;
+                
                 if (face.hasLeftEyePosition) {
                     CGPoint leftEyePos = face.leftEyePosition;
                     CGRect leftEyeRect = CGRectMake(leftEyePos.x - eyeWidth / 2.0, leftEyePos.y - eyeHeight / 2.0, eyeWidth, eyeHeight);
-                    UIImage *leftEye = [image crop:leftEyeRect];
-                    [eyeRegions addObject:leftEye];
+                    leftEye = [image crop:leftEyeRect];
                 }
             
                 if (face.hasRightEyePosition) {
                     CGPoint rightEyePos = face.rightEyePosition;
                     CGRect rightEyeRect = CGRectMake(rightEyePos.x - eyeWidth / 2.0, rightEyePos.y - eyeHeight / 2.0, eyeWidth, eyeHeight);
-                    UIImage *rightEye = [image crop:rightEyeRect];
-                    [eyeRegions addObject:rightEye];
+                    rightEye = [image crop:rightEyeRect];
                 }
                 
-                std::cout << "Hi" << std::endl;
+                // UIImage to float *
+                leftEye = [UIImage imageWithCGImage:leftEye.CGImage scale:leftEye.scale orientation:UIImageOrientationUp];
+                rightEye = [UIImage imageWithCGImage:rightEye.CGImage scale:rightEye.scale orientation:UIImageOrientationUp];
+                
+                cv::Mat leftMat = [self cvMatFromUIImage:leftEye];
+                cv::Mat rightMat = [self cvMatFromUIImage:rightEye];
+                
+                cv::Mat leftGreyMat, rightGreyMat;
+                cv::cvtColor(leftMat, leftGreyMat, CV_BGR2GRAY);
+                cv::cvtColor(rightMat, rightGreyMat, CV_BGR2GRAY);
                 
                 // Apply Neural Network here
+                
                 
             }
             
@@ -542,6 +564,29 @@ void DrawLines(cv::Mat &display_im, std::vector<cv::Point2f> &cv_pts, const cv::
     CGColorSpaceRelease(colorSpace);
     
     return finalImage;
+}
+
+- (cv::Mat)cvMatFromUIImage:(UIImage *)image
+{
+    CGColorSpaceRef colorSpace = CGImageGetColorSpace(image.CGImage);
+    CGFloat cols = image.size.width;
+    CGFloat rows = image.size.height;
+    
+    cv::Mat cvMat(rows, cols, CV_8UC4); // 8 bits per component, 4 channels (color channels + alpha)
+    
+    CGContextRef contextRef = CGBitmapContextCreate(cvMat.data,                 // Pointer to  data
+                                                    cols,                       // Width of bitmap
+                                                    rows,                       // Height of bitmap
+                                                    8,                          // Bits per component
+                                                    cvMat.step[0],              // Bytes per row
+                                                    colorSpace,                 // Colorspace
+                                                    kCGImageAlphaNoneSkipLast |
+                                                    kCGBitmapByteOrderDefault); // Bitmap info flags
+    
+    CGContextDrawImage(contextRef, CGRectMake(0, 0, cols, rows), image.CGImage);
+    CGContextRelease(contextRef);
+    
+    return cvMat;
 }
 
 @end
